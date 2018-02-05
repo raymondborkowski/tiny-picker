@@ -9,7 +9,8 @@
     "lint_test": "./node_modules/.bin/eslint test/ --color",
     "lint_fix": "./node_modules/.bin/eslint src/ test/ --color --fix",
     "lint": "npm run lint_src && npm run lint_test",
-    "build": "npm run test"
+    "build": "npm run test",
+    "publish": "npm run prepublish && npm publish"
   },
   "repository": {
     "type": "git",
