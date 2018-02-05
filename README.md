@@ -4,7 +4,7 @@
 
 ## Install
 
-` npm install tiny-picker`
+` npm install tiny-picker --save`
 
 ## Use
 
