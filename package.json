@@ -1,0 +1,44 @@
+{
+  "name": "tiny-picker",
+  "version": "1.0.0",
+  "description": "Ultra light weight date picker",
+  "scripts": {
+    "test": "npm run lint && node test/run.js",
+    "prepublish": "./node_modules/babel-cli/bin/babel.js src --out-dir lib",
+    "lint_src": "./node_modules/.bin/eslint src/ --color",
+    "lint_test": "./node_modules/.bin/eslint test/ --color",
+    "lint_fix": "./node_modules/.bin/eslint src/ test/ --color --fix",
+    "lint": "npm run lint_src && npm run lint_test",
+    "build": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raymondborkowski/tiny-picker.git"
+  },
+  "keywords": [
+    "tinyPicker",
+    "date",
+    "picker"
+  ],
+  "author": "Raymond Borkowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raymondborkowski/tiny-picker/issues"
+  },
+  "homepage": "https://github.com/raymondborkowski/tiny-picker#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "feather-test-browser": "^3.2.0"
+  },
+  "main": "lib/index.js",
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
+}
