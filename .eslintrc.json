@@ -3,5 +3,11 @@
     "env": {
         "browser": true,
         "node": true
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "no-plusplus": "off",
+        "prefer-rest-params": "off",
+        "prefer-destructuring": "off"
     }
 }
