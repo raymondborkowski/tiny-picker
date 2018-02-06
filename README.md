@@ -10,19 +10,23 @@
 
 Bind to input:
 
-```
+```html
 <input type="text" class="dp" />
 <input type="text" class="dp" />
 ```
 In Javascript:<br>
-```new TinyPicker('.dp');```
+```js
+new TinyPicker('.dp');
+```
 <br><br>
 In HTML:<br>
-```new window.TinyPicker('.datepicker');```
+```js
+new window.TinyPicker('.datepicker');
+```
 
 #### Options:
 *TinyPicker also takes in options as seen below*
-```
+```js
 new TinyPicker('.dp', {
     // Date  output format
     outputFormat:'%Y-%m-%d',
