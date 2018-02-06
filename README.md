@@ -1,7 +1,7 @@
 # tiny-picker
 
 *Ultra light weight date picker. There are no external dependencies involved.*
-
+![Optional Text](./docs/example.png)
 ## Install
 
 ` npm install tiny-picker --save`
