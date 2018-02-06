@@ -15,15 +15,16 @@ function extend(out = {}) {
 const defaultOptions = {
     firstDayOfWeek: 0,
     months: {
-        short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     },
-    outputFormat: '%Y-%m-%d',
     weekdays: {
-        short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        short: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
     },
 };
+
+const MONTH_NAV = 'month_nav';
+const DIV = 'div';
+const DP = 'dp';
 
 class TinyPicker {
     constructor(query, options) {
@@ -36,15 +37,15 @@ class TinyPicker {
 
     setOpenBindings(e) {
         let target = e.target;
-        if (target.className === 'month_nav next') {
+        if (target.className === `${MONTH_NAV} next`) {
             this.getNextMonth();
-        } else if (target.className === 'month_nav previous') {
+        } else if (target.className === `${MONTH_NAV} previous`) {
             this.getPreviousMonth();
         } else if (target.className === 'day') {
             this.setDate(target.innerHTML);
             this.close();
         } else {
-            while (target && !this.matchesReferrerEl(target) && target.className !== this.dp) {
+            while (target && !this.matchesReferrerEl(target) && target.className !== DP) {
                 target = target.parentNode;
             }
             if (target && this.matchesReferrerEl(target)) { this.render(target); }
@@ -61,7 +62,7 @@ class TinyPicker {
     }
 
     addWeek(days) {
-        const week = document.createElement('div');
+        const week = document.createElement(DIV);
         week.classList.add('week');
         for (let i = 0; i < days.length; i++) {
             week.appendChild(days[i]);
@@ -93,7 +94,7 @@ class TinyPicker {
     }
 
     cleanPicker() {
-        const picker = document.querySelector(`.${this.dp}`);
+        const picker = document.querySelector(`.${DP}`);
         if (picker) picker.remove();
     }
 
@@ -102,8 +103,8 @@ class TinyPicker {
             x: this.target.offsetLeft,
             y: this.target.offsetTop + this.target.offsetHeight,
         };
-        this.picker = document.createElement('div');
-        this.picker.classList.add('dp');
+        this.picker = document.createElement(DIV);
+        this.picker.classList.add(DP);
         this.picker.style.left = `${position.x}px`;
         this.picker.style.top = `${position.y}px`;
         this.picker.appendChild(this.getNav());
@@ -117,18 +118,18 @@ class TinyPicker {
     }
 
     getNav() {
-        const nav = document.createElement('div');
+        const nav = document.createElement(DIV);
         nav.classList.add('title-nav');
 
-        const previousMonth = document.createElement('div');
-        previousMonth.classList.add('month_nav');
+        const previousMonth = document.createElement(DIV);
+        previousMonth.classList.add(MONTH_NAV);
         previousMonth.classList.add('previous');
         previousMonth.innerHTML = '<';
 
         const currentMonth = document.createTextNode(`${this.options.months.long[this.current.month]} ${this.current.year}`);
 
-        const nextMonth = document.createElement('div');
-        nextMonth.classList.add('month_nav');
+        const nextMonth = document.createElement(DIV);
+        nextMonth.classList.add(MONTH_NAV);
         nextMonth.classList.add('next');
         nextMonth.innerHTML = '>';
 
@@ -142,10 +143,10 @@ class TinyPicker {
     getHeader() {
         const weekdays = this.options.weekdays.short.slice(this.options.firstDayOfWeek)
             .concat(this.options.weekdays.short.slice(0, this.options.firstDayOfWeek));
-        const header = document.createElement('div');
+        const header = document.createElement(DIV);
         header.classList.add('week-header');
         for (let i = 0; i < 7; i++) {
-            const dayOfWeek = document.createElement('div');
+            const dayOfWeek = document.createElement(DIV);
             dayOfWeek.innerHTML = weekdays[i];
             header.appendChild(dayOfWeek);
         }
@@ -167,7 +168,7 @@ class TinyPicker {
         const weeks = [];
         // Define last days of previous month if current month does not start on `firstOfMonth`
         for (let i = firstOfMonth - 1; i >= 0; i--) {
-            const lastMonthDay = document.createElement('div');
+            const lastMonthDay = document.createElement(DIV);
             lastMonthDay.classList.add('no-select');
             lastMonthDay.innerHTML = daysInPreviousMonth - i;
             days.push(lastMonthDay);
@@ -178,7 +179,7 @@ class TinyPicker {
                 weeks.push(this.addWeek(days));
                 days = [];
             }
-            const currentMonthDay = document.createElement('div');
+            const currentMonthDay = document.createElement(DIV);
             currentMonthDay.classList.add('day');
             if (this.selected && this.selected.year === this.current.year &&
                 this.selected.month === this.current.month && this.selected.day === i + 1) {
@@ -191,7 +192,7 @@ class TinyPicker {
         if (days.length) {
             const len = days.length;
             for (let i = 0; i < 7 - len; i++) {
-                const nextMonthDay = document.createElement('div');
+                const nextMonthDay = document.createElement(DIV);
                 nextMonthDay.classList.add('no-select');
                 nextMonthDay.innerHTML = i + 1;
                 days.push(nextMonthDay);
@@ -221,16 +222,9 @@ class TinyPicker {
 
     setDate(day) {
         const oldDateValue = this.target.value;
-        const dayOfWeek = new Date(this.current.year, this.current.month, day).getDay();
-        const date = this.options.outputFormat
-            .replace('%a', this.options.weekdays.short[dayOfWeek])
-            .replace('%A', this.options.weekdays.long[dayOfWeek])
+        const date = '%Y-%m-%d'
             .replace('%d', (`0${day}`).slice(-2))
-            .replace('%e', day)
-            .replace('%b', this.options.months.short[this.current.month])
-            .replace('%B', this.options.months.long[this.current.month])
             .replace('%m', (`0${this.current.month + 1}`).slice(-2))
-            .replace('%w', dayOfWeek)
             .replace('%Y', this.current.year);
         this.target.value = date;
 
@@ -252,7 +246,8 @@ class TinyPicker {
     }
 }
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = TinyPicker;
-else
+} else {
     window.TinyPicker = TinyPicker;
+}
