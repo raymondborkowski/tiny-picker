@@ -37,7 +37,7 @@ new TinyPicker('.dp', {
 
 ## Developing and contributing to tiny-picker
 ### Folder structure
-The main body of code is in `src/index.js` but the bablified code lives under `lib/index.js`
+The main body of code is in `index.js`
 
 The tests are in the `test/spec` directory. Please follow naming convention with `xxxx.spec.js`
 
@@ -55,7 +55,7 @@ We use [Feather-test](https://www.npmjs.com/package/feather-test) which is simil
 
 ### Before submitting a pull request
 
-Please make sure all code supports all versions of node. We write code in ES6 syntax but than transpile it to ES5 for browser coverage.
+Please make sure all code supports all versions of node. We write code in ES5 syntax for smaller size and browser compatibility.
 
 We use ESLint for syntax consistency, and the linting rules are included in this repository. Running `npm test` will check the linting rules as well. Please make sure your code has no linting errors before submitting a pull request.
 

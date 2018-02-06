@@ -1,13 +1,14 @@
 {
-    "extends": "airbnb-base",
     "env": {
-        "browser": true,
-        "node": true
+        "browser": true
     },
     "rules": {
         "indent": ["error", 4],
         "no-plusplus": "off",
         "prefer-rest-params": "off",
         "prefer-destructuring": "off"
-    }
+    },
+    "plugins": [
+        "es5"
+    ]
 }
