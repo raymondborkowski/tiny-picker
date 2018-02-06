@@ -17,7 +17,7 @@
     margin:2px;
     width:auto;
 }
-.mn{
+.prev, .next{
     align-items:center;
     cursor:pointer;
     display:flex;
@@ -29,11 +29,8 @@
     padding:2px;
     text-align: center;
 }
-.mn:first-child{
+.prev:first-child, .next:first-child{
     align-self:flex-start;
-}
-.mn:hover{
-    border:solid 1px #979797;
 }
 .wh {
     font-weight: bold;
@@ -70,4 +67,9 @@
 div:not([class]):hover {
     background:none;
     cursor: auto;
+}
+
+.disabled {
+    color: black;
+    background: red;
 }
