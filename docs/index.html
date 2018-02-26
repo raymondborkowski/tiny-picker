@@ -1,17 +1,21 @@
-<!DOCTYPE HTML>
-<html>
-    <head>
-        <script src="../index.js" type="text/javascript"></script>
-        <link rel="stylesheet" href="../tinypicker.css" type="text/css"/>
-        <script type="text/javascript">
-            new window.TinyPicker('.datepicker');
-        </script>
-    </head>
-    <body>
-        <h1>tiny-picker</h1>
-        <div>
-            <input type="text" class="datepicker" />
-            <input type="text" class="datepicker" />
-        </div>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>tiny-picker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../tinypicker.css">
+</head>
+<body>
+    <h1>Tiny-picker</h1>
+    <input type="text" id="startDate">
+    <input type="text" id="endDate">
+    <script src="../index.js"></script>
+    <script>
+        new TinyPicker({
+            start:document.getElementById('startDate'),
+            end: document.getElementById('endDate'),
+            months: 2
+        });
+    </script>
+</body>
 </html>

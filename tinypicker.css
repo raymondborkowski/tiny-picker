@@ -1,75 +1,123 @@
-.dp {
-    background:#272727;
-    color:#DDDDDD;
-    font-size: 13px;
-    font-family: Helvetica;
-    -webkit-font-smoothing: antialiased;
+.cal {
+    background: white;
+    border: 1px solid #ccc;
     position: absolute;
-    width:200px;
+    z-index: 1;
+    padding: 0;
+    font-size: 10px;
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
 }
-.tn {
-    align-items:center;
-    background:#222;
-    display:flex;
-    flex-direction:row;
-    font-weight:bold;
-    justify-content:space-between;
-    margin:2px;
-    width:auto;
+
+.cal:before {
+    position: absolute;
+    top: -7px;
+    left: 9px;
+    display: inline-block;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #ccc;
+    border-left: 7px solid transparent;
+    border-bottom-color: rgba(0,0,0,0.2);
+    content: '';
 }
-.prev, .next{
-    align-items:center;
-    cursor:pointer;
-    display:flex;
-    flex:0 15px;
-    font-weight:bold;
-    height:15px;
-    justify-content:center;
-    margin:1px;
-    padding:2px;
+
+.cal:after {
+    position: absolute;
+    top: -6px;
+    left: 10px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;
+    border-left: 6px solid transparent;
+    content: '';
+}
+
+.header {
+    font-size: 15px;
     text-align: center;
-}
-.prev:first-child, .next:first-child{
-    align-self:flex-start;
-}
-.wh {
-    font-weight: bold;
-}
-.wh, .w {
-    display:flex;
-    flex-direction:row;
-    justify-content:space-between;
-}
-.wh > div {
-    align-items:flex-start;
-    display:flex;
-    flex:1;
-    justify-content:center;
-}
-.w > div {
-    align-items:flex-end;
-    cursor:pointer;
-    display:flex;
-    flex:1;
-    justify-content:center;
-    margin:1px;
-    padding:2px;
+    font-weight: 500;
+    margin: 10px;
 }
 
-.w > div.selected {
-    background-color:#415E82;
-    font-weight:bold;
-}
-.w > div:hover {
-    background:#555;
+.nav {
+    margin: 0;
 }
 
-div:not([class]):hover {
-    background:none;
-    cursor: auto;
+.dName {
+    display: block;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    font-style: normal;
+    float: left;
+    width: 29.5px;
+}
+
+.month {
+    max-width: 210px;
+    width: auto;
+    height: auto;
+    display: inline-block;
+    padding: 0 10px 10px;
+}
+
+.day {
+    float: left;
+    text-align: center;
+    border: none;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    color: #555;
+    border-right: 1.5px solid white;
+    border-bottom: 1.5px solid white;
+    font-size: 14px;
+}
+
+.selected {
+    background-color: #bbddf5;
+}
+
+.error, .error:focus {
+    outline: none !important;
+    border:1px solid red;
+    box-shadow: 0 0 10px red;
 }
 
 .disabled {
-    color: black;
-    background: red;
+    opacity: 0.7;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    color: #888;
+}
+
+.right:before, .left:before {
+    border-style: solid;
+    border-width: 3px 3px 0 0;
+    content: '';
+    display: inline-block;
+    height: 7px;
+    width: 7px;
+}
+
+.right:before {
+    transform: rotate(45deg);
+}
+
+.left:before {
+    transform: rotate(-135deg);
+}
+
+.right {
+    position: absolute;
+    right: 25px;
+    top: 14px;
+}
+
+.left {
+    position: absolute;
+    left: 20px;
+    top: 14px;
 }

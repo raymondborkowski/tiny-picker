@@ -1,262 +1,282 @@
-function TinyPicker(query, options) {
-    var defaultOptions = {
-        start: 1,
-        format: '%Y-%m-%d',
-        months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-        days: ['S','M','T','W','T','F','S'],
-        doubleMonth: true,
-        stayOpen: true,
-        range: true,
-        history: false
-    };
-    var DIV = 'div';
-    var queryElms;
-    var currentDate = new Date();
+/*
+ *
+ * TODO:
+ * Fix state if user enters dates then deletes end date, remove shading from "selected dates"
+ * Properly highlight date range when hovering
+ * If window size small, only show one month
+ * allow overrides to work
+ *
+ */
 
+function TinyPicker(settings) {
     if (!(this instanceof TinyPicker)) {
-        return new TinyPicker(query, options);
+        return new TinyPicker(settings, overrides);
     }
 
-    options = extend({}, defaultOptions, options);
-    document.addEventListener('click', function(e) {setOpenBindings(e.target);}, false);
-    var picker = null, targetEl = null, current, selected;
+    var defaults = {
+        local: settings.local || 'en-us',
+        selectToday: settings.selectToday || true,
+        monthsToShow: settings.monthsToShow || 2,
+        weekEnd: settings.weekEnd || false,
+        days: settings.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+    };
 
-    function setOpenBindings(target) {
-        queryElms = document.querySelectorAll(query);
-        var className = target.className;
-        if (className === 'next') {
-            getNextMonth();
-        } else if (className === 'prev') {
-            getPreviousMonth();
-        } else if (className === 'day') {
-            setDate(target.innerHTML);
-            if (options.stayOpen) {
-                close();
-                openNext();
-            } else {
-                close();
-            }
-        } else {
-            while (target && !matchesReferrerEl(target) && className !== 'dp') {
-                target = target.parentNode;
-            }
-            if (target && matchesReferrerEl(target)) { render(target); }
-            if (!target) { close(); }
-        }
+    var today = newDateInstance(newDateInstance().setHours(0,0,0,0));
+    var firstBox = settings.start;
+    var lastBox = settings.end;
+    var startDate = firstBox.value === '' ? today : newDateInstance(firstBox.value);
+    var endDate = lastBox.value === '' ? addDayOrMonth(1, 'days') : newDateInstance(lastBox.value);
+    var calendarClassName = 'cal';
+    var div = 'div';
+
+    // Specific helpers for TinyPicker
+    function isDateTodayOrFuture(currentDate, checkThisDate) {
+        return currentDate.getTime() >= checkThisDate.getTime();
     }
 
-    function openNext() {
-        for (var i = 0; i < queryElms.length; i++) {
-            if (!queryElms[i].value) {render(queryElms[i]);}
-        }
+    function isDaySelected(beginDate, finalDate, checkThisDate) {
+        return isDateTodayOrFuture(checkThisDate, beginDate) && isDateTodayOrFuture(finalDate, checkThisDate);
     }
 
-    function matchesReferrerEl(elm) {
-        for (var i = 0; i < queryElms.length; i++) {
-            if (elm === queryElms[i]) {return true;}
-        }
-        return false;
+    function setDateInEl(date, shadowElement){
+        shadowElement.value = date.toISOString().split('T')[0];
+        updateValidDates(shadowElement, date);
     }
 
-    function addWeek(days) {
-        var week = createEl(DIV);
-        week.classList.add('w');
-        for (var i = 0; i < days.length; i++) {
-            appendChild(week, days[i]);
-        }
-        return week;
+    function userInputedDateHandler(element) {
+        var userInputedDate = newDateInstance(element.value);
+        var errorClass = 'error';
+
+        isValidDate(userInputedDate) ? element.classList.add(errorClass) : element.classList.remove(errorClass);
+        isDateTodayOrFuture(userInputedDate, today) && setDateInEl(userInputedDate, element);
     }
 
-    function render(target) {
-        targetEl = typeof target !== typeof undefined ? target : targetEl;
-        if (target || typeof current === typeof undefined) {
-            if (target) { selected = null; }
-            if (target && target.value) {
-                currentDate = parseDate(target.value.toLowerCase());
-                selected = {
-                    year: currentDate.getFullYear(),
-                    month: currentDate.getMonth(),
-                    day: currentDate.getDate(),
-                };
-            }
-            current = {
-                year: currentDate.getFullYear(),
-                month: currentDate.getMonth(),
-            };
-        }
-        cleanPicker();
-        draw();
+    function getNumberOfWeeks(date) {
+        return Math.ceil((date.getDate() - 1 - date.getDay()) / 7);
     }
 
-    function cleanPicker() {
-        var picker = document.querySelector('.dp');
-        if (picker) picker.remove();
+    function removeCalendar(className) {
+        var element = getFirstElementByClass(className);
+        element && document.body.removeChild(element);
     }
 
-    function draw() {
-        picker = createEl(DIV);
-        picker.classList.add('dp');
-        picker.style.cssText = 'left:' + targetEl.offsetLeft+ 'px;top:' + (targetEl.offsetTop + targetEl.offsetHeight) + 'px;solid:blue;';
-        appendChild(picker, getNav());
-        appendChild(picker, getHeader());
-        for (var i = 0; i < getWeeks().length; i++) {
-            appendChild(picker, getWeeks()[i]);
-        }
-
-        targetEl.parentNode.insertBefore(picker, targetEl.nextSibling);
-    }
-
-    function getNav() {
-        var nav = createEl(DIV);
-        nav.classList.add('tn');
-
-        var previousMonth = createEl(DIV);
-        previousMonth.className = 'prev';
-        previousMonth.innerHTML = '<';
-
-        var currentMonth = document.createTextNode(options.months[current.month] + ' ' + current.year);
-
-        var nextMonth = createEl(DIV);
-        nextMonth.className = 'next';
-        nextMonth.innerHTML = '>';
-
-        appendChild(nav, previousMonth);
-        appendChild(nav, currentMonth);
-        appendChild(nav, nextMonth);
-
-        return nav;
-    }
-
-    function getHeader() {
-        var weekdays = options.days.slice(options.start).concat(options.days.slice(0, options.start));
-        var header = createEl(DIV);
-        header.classList.add('wh');
-        for (var i = 0; i < 7; i++) {
-            var dayOfWeek = createEl(DIV);
-            dayOfWeek.innerHTML = weekdays[i];
-            appendChild(header, dayOfWeek);
-        }
-        return header;
-    }
-
-    function getWeeks() {
-        var firstOfMonth = new Date(current.year, current.month, 1).getDay();
-        firstOfMonth = firstOfMonth < options.start ? 7+(firstOfMonth - options.start ) : firstOfMonth - options.start;
-        var daysInMonth = new Date(current.year, current.month + 1, 0).getDate();
-        var days = [];
-        var weeks = [];
-
-        // Create empty spaces for last month
-        for (var i = firstOfMonth - 1; i >= 0; i--) {
-            days.push(createEl(DIV));
-        }
-        // current month days
-        for (var i = 0; i < daysInMonth; i++) {
-            if (i && (firstOfMonth + i) % 7 === 0) {
-                weeks.push(addWeek(days));
-                days = [];
-            }
-            var currentMonthDay = createEl(DIV);
-            currentMonthDay.classList.add('day');
-            if (selected && selected.year === current.year && selected.month === current.month && selected.day === i + 1) {
-                currentMonthDay.classList.add('selected');
-            }
-            currentMonthDay.innerHTML = i + 1;
-            if (currentDate.getDate() > currentMonthDay.innerHTML && currentDate.getMonth() === current.month && currentDate.getFullYear() === current.year) {
-                currentMonthDay.classList.add('disabled');
-            }
-            days.push(currentMonthDay);
-        }
-        // Create empty spaces for next month
-        if (days.length) {
-            var len = days.length;
-            for (var i = 0; i < 7 - len; i++) {
-                days.push(createEl(DIV));
-            }
-            weeks.push(addWeek(days));
-        }
-        return weeks;
-    }
-
-    function getNextMonth() {
-        var currentSelectedDate = new Date(current.year, current.month + 1);
-        current = {
-            year: currentSelectedDate.getFullYear(),
-            month: currentSelectedDate.getMonth(),
-        };
-        render();
-    }
-
-    function getPreviousMonth() {
-        var currentSelectedDate = new Date(current.year, current.month - 1);
-        if (options.history || (current.month <= currentDate.getMonth() && current.year == currentDate.getFullYear())) { return; } // Do not let them go backwards
-        current = {
-            year: currentSelectedDate.getFullYear(),
-            month: currentSelectedDate.getMonth(),
-        };
-        render();
-    }
-
-    function setDate(day) {
-        var oldDateValue = targetEl.value;
-        var date = options.format
-            .replace('%d', ('0'+ day).slice(-2))
-            .replace('%m', ('0' + (current.month + 1)).slice(-2))
-            .replace('%Y', current.year);
-        targetEl.value = date;
-
-        if (date !== oldDateValue) {
-            if ('createEvent' in document) {
-                var changeEvent = document.createEvent('HTMLEvents');
-                changeEvent.initEvent('change', false, true);
-                targetEl.dispatchEvent(changeEvent);
-            } else {
-                targetEl.fireEvent('onchange');
-            }
-        }
-    }
-
-    function close() {
-        current = null;
-        targetEl = null;
-        if (picker) { picker.remove(); }
+    function canRemoveCalendar(el, calendarClass) {
+        var calendarEl = getFirstElementByClass(calendarClass);
+        return calendarEl && el !== firstBox && el !== lastBox && !calendarEl.contains(getFirstElementByClass(el.className));
     }
 
     /*
-     * HELPERS
+     *
+     * Visual
+     *
      */
 
-    function extend(out) {
-        var args = arguments;
-        out = out || {};
-        for (var i = 1; i < args.length; i++) {
-            if (args[i]) {
-                for (var key in args[i]) {
-                    if (args[i].hasOwnProperty(key)) {
-                        out[key] = args[i][key];
+    function getChevrons(element, firstMonth, firstYear) {
+        var navWrapper = createElementWithClass(div, 'nav');
+
+        appendChild(navWrapper, createElementWithClass('span', 'right'));
+        appendChild(navWrapper, createElementWithClass('span', 'left'));
+
+        addClickListener(navWrapper, function(e) {
+            var monthChange = e.target.className === 'right' ? 1 : -1;
+            var newStartDate = addDayOrMonth(monthChange, 'months', newDateInstance(firstMonth + firstYear));
+
+            showCalendar(element, newStartDate);
+        });
+        return navWrapper;
+    }
+
+    function positionCalendar(calendarElement, shadowElement) {
+        calendarElement.style.top  =  shadowElement.offsetTop + shadowElement.offsetHeight + 15 + 'px';
+        calendarElement.style.left = shadowElement.offsetLeft + 'px';
+    }
+
+    function renderCalendar(element, newDate) {
+
+        removeCalendar(calendarClassName);
+
+        var calendarObj = setUpCalendar(newDate);
+        var sinceDate = element !== firstBox && isDateTodayOrFuture(startDate, today) ? startDate : today;
+
+        var calendarWidget = createElementWithClass(div, calendarClassName);
+        appendChild(calendarWidget, getChevrons(element, calendarObj[0].name, calendarObj[0].year));
+        appendChild(document.body, calendarWidget);
+
+        calendarObj.forEach(function(month){
+            var monthDiv = createElementWithClass(div, 'month');
+
+            var monthHeader = createElementWithClass('p', 'header');
+            monthHeader.innerHTML = month.name + ' ' + month.year;
+            appendChild(monthDiv, monthHeader);
+
+            var calendarContainer = createElementWithClass(div);
+
+            defaults.days.forEach(function(day) {
+                var dayEl = createElementWithClass(div, 'dName');
+                dayEl.innerHTML = day;
+                appendChild(calendarContainer, dayEl);
+            });
+
+            appendChild(calendarContainer, createHTMLWeeks(month.weeks, sinceDate, element));
+            appendChild(monthDiv, calendarContainer);
+            appendChild(calendarWidget, monthDiv);
+        });
+    }
+
+    function showCalendar(element, newStartDate){
+        if (!newStartDate) {
+            newStartDate = element === firstBox ? startDate : new Date(endDate.getFullYear(), endDate.getMonth());
+        }
+
+        newStartDate = isDateTodayOrFuture(newStartDate, today) ? newStartDate : today;
+        renderCalendar(element, newStartDate);
+        positionCalendar(getFirstElementByClass(calendarClassName), element);
+
+        addClickListener(document, function(e){
+            canRemoveCalendar(e.target, calendarClassName) && removeCalendar(calendarClassName);
+        });
+    }
+
+    function setUpCalendar(passedInDate) {
+        var monthsArr = [];
+        var year = passedInDate.getFullYear();
+        var monthNum = passedInDate.getMonth();
+        for (var i = 0; i < defaults.monthsToShow; i++) {
+            var date = new Date(year, monthNum + i, 1);
+            var month = getDays(passedInDate, date, i);
+            monthsArr.push(month);
+        }
+
+        return monthsArr;
+    }
+
+    function createEmptyDayHTML(appendTo) {
+        var dayOfWeekEl = createElementWithClass(div, 'day');
+        appendChild(appendTo, dayOfWeekEl);
+    }
+
+    function createHTMLWeeks(weeks, sinceDate, element){
+        var calendarBody = createElementWithClass(div);
+
+        weeks.forEach(function(week){
+            for(var i=0; i < 7; i++) {
+                var currentDate = week[i] && week[i].date;
+
+                if(typeof currentDate !== 'undefined'){
+                    var dayOfWeekEl = createElementWithClass(div, 'disabled');
+                    if(isDateTodayOrFuture(currentDate, sinceDate)){
+                        changeClass(dayOfWeekEl, 'active');
+
+                        if(isDaySelected(startDate, endDate, currentDate) && firstBox.value){
+                            changeClass(dayOfWeekEl, 'selected');
+                        }
+
+                        addClickListener(dayOfWeekEl, setDateInEl.bind(this, currentDate, element));
                     }
+
+                    dayOfWeekEl.innerHTML = currentDate.getDate();
+                    dayOfWeekEl.classList.add('day');
+                    appendChild(calendarBody, dayOfWeekEl);
+                } else {
+                    createEmptyDayHTML(calendarBody);
                 }
             }
+        });
+
+        return calendarBody;
+    }
+
+    /*
+     *
+     * Data functions (Manipulation)
+     *
+     */
+
+    function getDays(passedInDate, date, i) {
+        var month = {
+            name: date.toLocaleString(defaults.local, { month: "long"}),
+            year: date.getFullYear(),
+            weeks: []
+        };
+        var newDate = new Date(passedInDate.getFullYear(), passedInDate.getMonth() + i, 1).getMonth();
+        while (date.getMonth() === newDate) {
+            var week = getNumberOfWeeks(newDateInstance(date));
+            if(month.weeks[week] == null){
+                month.weeks[week] = {};
+            }
+
+            var day = newDateInstance(date);
+            month.weeks[week][day.getDay()] = {
+                date: day,
+            };
+            date.setDate(date.getDate() + 1);
         }
-        return out;
-    };
-
-    function parseDate(input) {
-        var parts = input.split('-');
-        return new Date(parts[0], parts[1]-1, parts[2]);
+        return month;
     }
 
-    function createEl(type) {
-        return document.createElement(type);
+    function updateValidDates(shadowElement, date) {
+        if(shadowElement === firstBox){
+            startDate = date;
+            if(isDateTodayOrFuture(startDate, endDate)){
+                endDate = date;
+            }
+            lastBox.focus();
+        } else {
+            endDate = date;
+            removeCalendar(calendarClassName);
+        }
     }
 
-    function appendChild(parent, child){
+
+    // Init listeners to properly display calendar
+
+    [firstBox, lastBox].forEach(function(element){
+        element.addEventListener('focus', function(e){
+            showCalendar(e.target);
+        });
+        // TODO: Should this be here??? I can do this somewhere else
+        element.addEventListener('keydown', function(e){
+            setTimeout(function() {
+                userInputedDateHandler(e.target);
+            }, 5000);
+        });
+    });
+
+    // helper functions to minimize file size - can move out of TinyPicker
+
+    function createElementWithClass(type, className) {
+        var el = document.createElement(type);
+        changeClass(el, className || '');
+        return el;
+    }
+
+    function appendChild(parent, child) {
         parent.appendChild(child);
     }
-}
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = TinyPicker;
-} else {
-    window.TinyPicker = TinyPicker;
+    function addDayOrMonth(number, unit, date) {
+        date = date || newDateInstance();
+        unit === 'days' ? date.setDate(date.getDate() + number) : date.setMonth(date.getMonth() + number);
+        return date;
+    }
+
+    function changeClass(el, className){
+        el.className = className;
+    }
+
+    function getFirstElementByClass(className){
+        return document.getElementsByClassName(className)[0];
+    }
+
+    function addClickListener(el, callback){
+        return el.addEventListener('click', callback);
+    }
+
+    function newDateInstance(val) {
+        return val ? new Date(val) : new Date();
+    }
+
+    function isValidDate(newDate) {
+        return newDate instanceof Date && !isFinite(newDate)
+    }
 }
