@@ -36,7 +36,6 @@ function TinyPicker(settings) {
      *
      */
 
-    // No Globals
     function getChevrons(element, calendarObj) {
         var navWrapper = createElementWithClass(div, 'nav');
 
@@ -55,7 +54,51 @@ function TinyPicker(settings) {
         calendarElement.style.top  =  shadowElement.offsetTop + shadowElement.offsetHeight + 15 + 'px';
         calendarElement.style.left = shadowElement.offsetLeft + 'px';
     }
+    function showCalendar(element, newStartDate){
+        if (!newStartDate) {
+            newStartDate = element === firstBox ? startDate : new Date(endDate.getFullYear(), endDate.getMonth());
+        }
 
+        newStartDate = isDateTodayOrFuture(newStartDate, today) ? newStartDate : today;
+        renderCalendar(element, newStartDate);
+        positionCalendar(getFirstElementByClass(calendarClassName), element);
+
+        addClickListener(document, function(e){
+            var el = e.target;
+            var calendarEl = getFirstElementByClass(calendarClassName);
+            if (calendarEl && el !== firstBox && el !== lastBox && !calendarEl.contains(getFirstElementByClass(el.className))) {
+                removeCalendar(calendarClassName);
+            }
+        });
+    }
+    function setUpCalendar(passedInDate) {
+        var monthsArr = [];
+        var year = passedInDate.getFullYear();
+        var monthNum = passedInDate.getMonth();
+        for (var i = 0; i < defaults.monthsToShow; i++) {
+            var date = new Date(year, monthNum + i, 1);
+            var month = getDays(passedInDate, date, i);
+            monthsArr.push(month);
+        }
+
+        return monthsArr;
+    }
+    function createEmptyDayHTML(appendTo) {
+        var dayOfWeekEl = createElementWithClass(div, 'day');
+        appendChild(appendTo, dayOfWeekEl);
+    }
+    function updateValidDates(shadowElement, date) {
+        if(shadowElement === firstBox){
+            startDate = date;
+            if(isDateTodayOrFuture(startDate, endDate)){
+                endDate = date;
+            }
+            lastBox.focus();
+        } else {
+            endDate = date;
+            removeCalendar(calendarClassName);
+        }
+    }
 
 
 
@@ -85,52 +128,17 @@ function TinyPicker(settings) {
                 appendChild(calendarContainer, dayEl);
             });
 
-            appendChild(calendarContainer, createHTMLWeeks(month.weeks, sinceDate, element));
+            appendChild(calendarContainer, createMonthBody(month.weeks, sinceDate, element));
             appendChild(monthDiv, calendarContainer);
             appendChild(calendarWidget, monthDiv);
         });
     }
 
-    // Good
-    function showCalendar(element, newStartDate){
-        if (!newStartDate) {
-            newStartDate = element === firstBox ? startDate : new Date(endDate.getFullYear(), endDate.getMonth());
-        }
-
-        newStartDate = isDateTodayOrFuture(newStartDate, today) ? newStartDate : today;
-        renderCalendar(element, newStartDate);
-        positionCalendar(getFirstElementByClass(calendarClassName), element);
-
-        addClickListener(document, function(e){
-            canRemoveCalendar(e.target, calendarClassName) && removeCalendar(calendarClassName);
-        });
-    }
-    function setUpCalendar(passedInDate) {
-        var monthsArr = [];
-        var year = passedInDate.getFullYear();
-        var monthNum = passedInDate.getMonth();
-        for (var i = 0; i < defaults.monthsToShow; i++) {
-            var date = new Date(year, monthNum + i, 1);
-            var month = getDays(passedInDate, date, i);
-            monthsArr.push(month);
-        }
-
-        return monthsArr;
-    }
-
-    function createEmptyDayHTML(appendTo) {
-        var dayOfWeekEl = createElementWithClass(div, 'day');
-        appendChild(appendTo, dayOfWeekEl);
-    }
-
-
-
-
-    function createHTMLWeeks(weeks, sinceDate, element){
+    function createMonthBody(weeks, sinceDate, element){
         var calendarBody = createElementWithClass(div);
 
         weeks.forEach(function(week){
-            for(var i=0; i < 7; i++) {
+            for(var i = 0; i < 7; i++) {
                 var currentDate = week[i] && week[i].date;
 
                 if(currentDate === undefined){
@@ -138,10 +146,10 @@ function TinyPicker(settings) {
                 } else {
                     var dayOfWeekEl = createElementWithClass(div, 'disabled');
                     if(isDateTodayOrFuture(currentDate, sinceDate)){
-                        changeClass(dayOfWeekEl, 'active');
+                        dayOfWeekEl.className =  'active';
 
                         if(isDaySelected(startDate, endDate, currentDate) && firstBox.value){
-                            changeClass(dayOfWeekEl, 'selected');
+                            dayOfWeekEl.className = 'selected';
                         }
 
                         addClickListener(dayOfWeekEl, setDateInEl.bind(this, currentDate, element));
@@ -185,17 +193,7 @@ function TinyPicker(settings) {
         return month;
     }
 
-    function updateValidDates(shadowElement, date) {
-        if(shadowElement === firstBox){
-            startDate = date;
-            if(isDateTodayOrFuture(startDate, endDate)){
-                endDate = date;
-            }
-        } else {
-            endDate = date;
-            removeCalendar(calendarClassName);
-        }
-    }
+
 
 
 
@@ -215,10 +213,12 @@ function TinyPicker(settings) {
             showCalendar(e.target);
         });
         // TODO: Should this be here??? I can do this somewhere else
+        var timer;
         element.addEventListener('keydown', function(e){
-            setTimeout(function() {
+            clearTimeout(timer);
+            timer = setTimeout(function() {
                 userInputedDateHandler(e.target);
-            }, 5000);
+            }, 1000);
         });
     });
 
@@ -226,7 +226,7 @@ function TinyPicker(settings) {
 
     function createElementWithClass(type, className) {
         var el = document.createElement(type);
-        changeClass(el, className || '');
+        el.className = className || '';
         return el;
     }
 
@@ -240,10 +240,6 @@ function TinyPicker(settings) {
         return date;
     }
 
-    function changeClass(el, className){
-        el.className = className;
-    }
-
     function getFirstElementByClass(className, i){
         return document.getElementsByClassName(className)[i || 0];
     }
@@ -254,10 +250,6 @@ function TinyPicker(settings) {
 
     function newDateInstance(val) {
         return val ? new Date(val) : new Date();
-    }
-
-    function isValidDate(newDate) {
-        return newDate instanceof Date && !isFinite(newDate)
     }
 
     // Specific helpers for TinyPicker
@@ -278,7 +270,7 @@ function TinyPicker(settings) {
         var userInputedDate = newDateInstance(element.value);
         var errorClass = 'error';
 
-        isValidDate(userInputedDate) ? element.classList.add(errorClass) : element.classList.remove(errorClass);
+        userInputedDate instanceof Date && !isFinite(userInputedDate) ? element.classList.add(errorClass) : element.classList.remove(errorClass);
         isDateTodayOrFuture(userInputedDate, today) && setDateInEl(userInputedDate, element);
     }
 
@@ -289,10 +281,5 @@ function TinyPicker(settings) {
     function removeCalendar(className) {
         var element = getFirstElementByClass(className);
         element && document.body.removeChild(element);
-    }
-
-    function canRemoveCalendar(el, calendarClass) {
-        var calendarEl = getFirstElementByClass(calendarClass);
-        return calendarEl && el !== firstBox && el !== lastBox && !calendarEl.contains(getFirstElementByClass(el.className));
     }
 }
