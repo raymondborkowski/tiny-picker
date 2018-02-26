@@ -14,56 +14,23 @@ function TinyPicker(settings) {
     }
 
     var defaults = {
-        local: settings.local || 'en-us',
-        selectToday: settings.selectToday || true,
+        local: settings.local || 'en-US',
+        selectToday: settings.selectToday || false,
         monthsToShow: settings.monthsToShow || 2,
         weekEnd: settings.weekEnd || false,
         days: settings.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        preChoose: settings.preChoose || 2,
+        firstBox: settings.firstBox || getFirstElementByClass('TinyPicker'),
+        lastBox: settings.lastBox || getFirstElementByClass('TinyPicker', 1),
     };
 
-    var today = newDateInstance(newDateInstance().setHours(0,0,0,0));
-    var firstBox = settings.start;
-    var lastBox = settings.end;
+    var today = newDateInstance(defaults.selectToday ? newDateInstance().setHours(0,0,0,0) : '');
+    var firstBox = defaults.firstBox;
+    var lastBox = defaults.lastBox;
     var startDate = firstBox.value === '' ? today : newDateInstance(firstBox.value);
-    var endDate = lastBox.value === '' ? addDayOrMonth(1, 'days') : newDateInstance(lastBox.value);
+    var endDate = lastBox.value === '' ? addDayOrMonth(defaults.preChoose, 'days') : newDateInstance(lastBox.value);
     var calendarClassName = 'cal';
     var div = 'div';
-
-    // Specific helpers for TinyPicker
-    function isDateTodayOrFuture(currentDate, checkThisDate) {
-        return currentDate.getTime() >= checkThisDate.getTime();
-    }
-
-    function isDaySelected(beginDate, finalDate, checkThisDate) {
-        return isDateTodayOrFuture(checkThisDate, beginDate) && isDateTodayOrFuture(finalDate, checkThisDate);
-    }
-
-    function setDateInEl(date, shadowElement){
-        shadowElement.value = date.toISOString().split('T')[0];
-        updateValidDates(shadowElement, date);
-    }
-
-    function userInputedDateHandler(element) {
-        var userInputedDate = newDateInstance(element.value);
-        var errorClass = 'error';
-
-        isValidDate(userInputedDate) ? element.classList.add(errorClass) : element.classList.remove(errorClass);
-        isDateTodayOrFuture(userInputedDate, today) && setDateInEl(userInputedDate, element);
-    }
-
-    function getNumberOfWeeks(date) {
-        return Math.ceil((date.getDate() - 1 - date.getDay()) / 7);
-    }
-
-    function removeCalendar(className) {
-        var element = getFirstElementByClass(className);
-        element && document.body.removeChild(element);
-    }
-
-    function canRemoveCalendar(el, calendarClass) {
-        var calendarEl = getFirstElementByClass(calendarClass);
-        return calendarEl && el !== firstBox && el !== lastBox && !calendarEl.contains(getFirstElementByClass(el.className));
-    }
 
     /*
      *
@@ -71,7 +38,8 @@ function TinyPicker(settings) {
      *
      */
 
-    function getChevrons(element, firstMonth, firstYear) {
+    // No Globals
+    function getChevrons(element, calendarObj) {
         var navWrapper = createElementWithClass(div, 'nav');
 
         appendChild(navWrapper, createElementWithClass('span', 'right'));
@@ -79,17 +47,19 @@ function TinyPicker(settings) {
 
         addClickListener(navWrapper, function(e) {
             var monthChange = e.target.className === 'right' ? 1 : -1;
-            var newStartDate = addDayOrMonth(monthChange, 'months', newDateInstance(firstMonth + firstYear));
+            var newStartDate = addDayOrMonth(monthChange, 'months', newDateInstance(Object.values(calendarObj[0].weeks[0])[0].date));
 
             showCalendar(element, newStartDate);
         });
         return navWrapper;
     }
-
     function positionCalendar(calendarElement, shadowElement) {
         calendarElement.style.top  =  shadowElement.offsetTop + shadowElement.offsetHeight + 15 + 'px';
         calendarElement.style.left = shadowElement.offsetLeft + 'px';
     }
+
+
+
 
     function renderCalendar(element, newDate) {
 
@@ -99,7 +69,7 @@ function TinyPicker(settings) {
         var sinceDate = element !== firstBox && isDateTodayOrFuture(startDate, today) ? startDate : today;
 
         var calendarWidget = createElementWithClass(div, calendarClassName);
-        appendChild(calendarWidget, getChevrons(element, calendarObj[0].name, calendarObj[0].year));
+        appendChild(calendarWidget, getChevrons(element, calendarObj));
         appendChild(document.body, calendarWidget);
 
         calendarObj.forEach(function(month){
@@ -123,6 +93,7 @@ function TinyPicker(settings) {
         });
     }
 
+    // Good
     function showCalendar(element, newStartDate){
         if (!newStartDate) {
             newStartDate = element === firstBox ? startDate : new Date(endDate.getFullYear(), endDate.getMonth());
@@ -136,7 +107,6 @@ function TinyPicker(settings) {
             canRemoveCalendar(e.target, calendarClassName) && removeCalendar(calendarClassName);
         });
     }
-
     function setUpCalendar(passedInDate) {
         var monthsArr = [];
         var year = passedInDate.getFullYear();
@@ -155,6 +125,9 @@ function TinyPicker(settings) {
         appendChild(appendTo, dayOfWeekEl);
     }
 
+
+
+
     function createHTMLWeeks(weeks, sinceDate, element){
         var calendarBody = createElementWithClass(div);
 
@@ -162,7 +135,9 @@ function TinyPicker(settings) {
             for(var i=0; i < 7; i++) {
                 var currentDate = week[i] && week[i].date;
 
-                if(typeof currentDate !== 'undefined'){
+                if(currentDate === undefined){
+                    createEmptyDayHTML(calendarBody)
+                } else {
                     var dayOfWeekEl = createElementWithClass(div, 'disabled');
                     if(isDateTodayOrFuture(currentDate, sinceDate)){
                         changeClass(dayOfWeekEl, 'active');
@@ -177,8 +152,6 @@ function TinyPicker(settings) {
                     dayOfWeekEl.innerHTML = currentDate.getDate();
                     dayOfWeekEl.classList.add('day');
                     appendChild(calendarBody, dayOfWeekEl);
-                } else {
-                    createEmptyDayHTML(calendarBody);
                 }
             }
         });
@@ -228,6 +201,16 @@ function TinyPicker(settings) {
     }
 
 
+
+
+
+
+
+
+
+
+
+
     // Init listeners to properly display calendar
 
     [firstBox, lastBox].forEach(function(element){
@@ -264,8 +247,8 @@ function TinyPicker(settings) {
         el.className = className;
     }
 
-    function getFirstElementByClass(className){
-        return document.getElementsByClassName(className)[0];
+    function getFirstElementByClass(className, i){
+        return document.getElementsByClassName(className)[i || 0];
     }
 
     function addClickListener(el, callback){
@@ -278,5 +261,41 @@ function TinyPicker(settings) {
 
     function isValidDate(newDate) {
         return newDate instanceof Date && !isFinite(newDate)
+    }
+
+    // Specific helpers for TinyPicker
+    function isDateTodayOrFuture(currentDate, checkThisDate) {
+        return currentDate.getTime() >= checkThisDate.getTime();
+    }
+
+    function isDaySelected(beginDate, finalDate, checkThisDate) {
+        return isDateTodayOrFuture(checkThisDate, beginDate) && isDateTodayOrFuture(finalDate, checkThisDate);
+    }
+
+    function setDateInEl(date, shadowElement){
+        shadowElement.value = date.toLocaleDateString(defaults.local);
+        updateValidDates(shadowElement, date);
+    }
+
+    function userInputedDateHandler(element) {
+        var userInputedDate = newDateInstance(element.value);
+        var errorClass = 'error';
+
+        isValidDate(userInputedDate) ? element.classList.add(errorClass) : element.classList.remove(errorClass);
+        isDateTodayOrFuture(userInputedDate, today) && setDateInEl(userInputedDate, element);
+    }
+
+    function getNumberOfWeeks(date) {
+        return Math.ceil((date.getDate() - 1 - date.getDay()) / 7);
+    }
+
+    function removeCalendar(className) {
+        var element = getFirstElementByClass(className);
+        element && document.body.removeChild(element);
+    }
+
+    function canRemoveCalendar(el, calendarClass) {
+        var calendarEl = getFirstElementByClass(calendarClass);
+        return calendarEl && el !== firstBox && el !== lastBox && !calendarEl.contains(getFirstElementByClass(el.className));
     }
 }

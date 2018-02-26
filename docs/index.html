@@ -7,14 +7,18 @@
 </head>
 <body>
     <h1>Tiny-picker</h1>
-    <input type="text" id="startDate">
-    <input type="text" id="endDate">
+    <input type="text" class="TinyPicker" id="startDate" value="2018-10-22">
+    <input type="text" class="TinyPicker" value="2018-11-04">
     <script src="../index.js"></script>
     <script>
         new TinyPicker({
-            start:document.getElementById('startDate'),
-            end: document.getElementById('endDate'),
-            months: 2
+            // firstBox:document.getElementById('startDate'),
+            // lastBox: document.getElementById('endDate'),
+            monthsToShow: 2,
+            preChoose:10,
+            days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
+            selectToday: true,
+            local: 'es-US',
         });
     </script>
 </body>

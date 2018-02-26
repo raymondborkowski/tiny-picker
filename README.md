@@ -1,6 +1,6 @@
 # tiny-picker
 
-*Ultra light weight date picker. There are no external dependencies involved.*
+*Ultra light weight date picker. There are no external dependencies involved.*<br><br>
 ![Optional Text](./docs/example.png)
 ## Install
 
@@ -11,28 +11,36 @@
 Bind to input:
 
 ```html
-<input type="text" class="dp" />
-<input type="text" class="dp" />
+<input type="text" class="TinyPicker" />
+<input type="text" class="TinyPicker" />
+```
+To have preselected dates:
+```html
+    <input type="text" class="TinyPicker" id="startDate" value="2018-10-22">
+    <input type="text" class="TinyPicker" value="2018-11-04">
 ```
 In Javascript:<br>
 ```js
-new TinyPicker('.dp');
+new TinyPicker();
 ```
 <br><br>
 In HTML:<br>
 ```js
-new window.TinyPicker('.datepicker');
+new window.TinyPicker();
 ```
 
 #### Options:
 *TinyPicker also takes in options as seen below*
 ```js
-new TinyPicker('.dp', {
-    // Date  output format
-    outputFormat:'%Y-%m-%d',
-    // Auto open next calendar picker for next item in input collection
-    autoOpen: true
-});
+new TinyPicker({
+            firstBox:document.getElementById('startDate'), // Overrides us finding the first input box
+            lastBox: document.getElementById('endDate'), // Overrides us finding the last input box
+            monthsToShow: 2, // How many months to display
+            preChoose:10, // After the user selects the first date, how many days in the future do you want us to prehighlight
+            days: ['Su','Mo','Tu','We','Th','Fr','Sa'], // Override for day abbreviations in the calendar
+            selectToday: true, // Allow the user to select the current date
+            local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US
+        });
 ```
 
 ## Developing and contributing to tiny-picker
