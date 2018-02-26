@@ -4,7 +4,6 @@
  * Fix state if user enters dates then deletes end date, remove shading from "selected dates"
  * Properly highlight date range when hovering
  * If window size small, only show one month
- * allow overrides to work
  *
  */
 
@@ -17,7 +16,6 @@ function TinyPicker(settings) {
         local: settings.local || 'en-US',
         selectToday: settings.selectToday || false,
         monthsToShow: settings.monthsToShow || 2,
-        weekEnd: settings.weekEnd || false,
         days: settings.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
         preChoose: settings.preChoose || 2,
         firstBox: settings.firstBox || getFirstElementByClass('TinyPicker'),
@@ -193,7 +191,6 @@ function TinyPicker(settings) {
             if(isDateTodayOrFuture(startDate, endDate)){
                 endDate = date;
             }
-            lastBox.focus();
         } else {
             endDate = date;
             removeCalendar(calendarClassName);

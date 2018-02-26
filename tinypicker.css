@@ -9,6 +9,7 @@
     box-shadow: 0 6px 12px rgba(0,0,0,0.175);
     color: black;
     font-family: Arial, Helvetica, sans-serif;
+
 }
 
 .cal:before {
@@ -38,7 +39,7 @@
     font-size: 15px;
     text-align: center;
     font-weight: 500;
-    margin: 10px;
+    margin: 15px 0 5px 0;
 }
 
 .nav {
@@ -46,13 +47,13 @@
 }
 
 .dName {
-    display: block;
-    height: 25px;
-    line-height: 25px;
     text-align: center;
-    font-style: normal;
     float: left;
     width: 29.5px;
+    color: #bbb;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
 }
 
 .month {
@@ -71,6 +72,7 @@
     height: 28px;
     line-height: 28px;
     color: #555;
+    cursor: pointer;
     border-right: 1.5px solid white;
     border-bottom: 1.5px solid white;
     font-size: 14px;
@@ -88,9 +90,8 @@
 
 .disabled {
     opacity: 0.7;
-    text-decoration: line-through;
-    cursor: not-allowed;
     color: #888;
+    cursor: default;
 }
 
 .right:before, .left:before {
@@ -100,6 +101,7 @@
     display: inline-block;
     height: 7px;
     width: 7px;
+    cursor: pointer;
 }
 
 .right:before {
@@ -113,11 +115,11 @@
 .right {
     position: absolute;
     right: 25px;
-    top: 14px;
+    top: 18px;
 }
 
 .left {
     position: absolute;
     left: 20px;
-    top: 14px;
+    top: 18px;
 }
