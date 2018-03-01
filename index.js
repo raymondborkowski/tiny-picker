@@ -66,7 +66,7 @@ function TinyPicker(settings) {
         addClickListener(document, function(e){
             var el = e.target;
             var calendarEl = getFirstElementByClass(calendarClassName);
-            if (calendarEl && el !== firstBox && el !== lastBox && !calendarEl.contains(getFirstElementByClass(el.className))) {
+            if (calendarEl && el !== firstBox && el !== lastBox && !calendarEl.contains(getFirstElementByClass(el.className)) && lastBox.value !== '') {
                 removeCalendar(calendarClassName);
             }
         });
@@ -93,12 +93,24 @@ function TinyPicker(settings) {
             if(isDateTodayOrFuture(startDate, endDate)){
                 endDate = date;
             }
+            // If user reenters startDate, force reselect of enddate
+            lastBox.value = '';
+            endDate = startDate;
             lastBox.focus();
         } else {
             endDate = date;
             removeCalendar(calendarClassName);
         }
     }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -151,13 +163,14 @@ function TinyPicker(settings) {
                         if(isDaySelected(startDate, endDate, currentDate) && firstBox.value){
                             dayOfWeekEl.className = 'selected';
                         }
-
                         addClickListener(dayOfWeekEl, setDateInEl.bind(this, currentDate, element));
                     }
 
                     dayOfWeekEl.innerHTML = currentDate.getDate();
                     dayOfWeekEl.classList.add('day');
+                    dayOfWeekEl.setAttribute('time', currentDate.getTime());
                     appendChild(calendarBody, dayOfWeekEl);
+                    hoverRange(dayOfWeekEl);
                 }
             }
         });
@@ -193,7 +206,23 @@ function TinyPicker(settings) {
         return month;
     }
 
+    function hoverRange(el) {
+        el.addEventListener('mouseover', function(e) {
+            var days = document.getElementsByClassName('day');
+            var hoverTime = parseInt(e.target.getAttribute('time'), 10);
+            var startTime = startDate.getTime();
 
+            for (var i = 0; i < days.length; i++) {
+                var time = parseInt(days[i].getAttribute('time'), 10);
+
+                if (time <= hoverTime && time >= startTime) {
+                    days[i].classList.add('selected');
+                } else {
+                    days[i].classList.remove('selected');
+                }
+            }
+        });
+    }
 
 
 
