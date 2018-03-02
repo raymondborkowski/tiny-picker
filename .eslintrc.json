@@ -6,9 +6,9 @@
         "indent": ["error", 4],
         "no-plusplus": "off",
         "prefer-rest-params": "off",
-        "prefer-destructuring": "off"
+        "prefer-destructuring": "off",
+        "func-names": "off",
+        "no-param-reassign": "off"
     },
-    "plugins": [
-        "es5"
-    ]
+    "extends": "eslint-config-airbnb-es5"
 }
