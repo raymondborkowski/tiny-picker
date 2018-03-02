@@ -1,6 +1,6 @@
 {
   "name": "tiny-picker",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Ultra light weight date picker",
   "scripts": {
     "test": "node test/run.js",

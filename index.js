@@ -299,3 +299,5 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
         element && document.body.removeChild(element);
     }
 }
+
+module.exports = TinyPicker;
