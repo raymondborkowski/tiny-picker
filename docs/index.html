@@ -8,18 +8,16 @@
 <body>
     <h1>Tiny-picker</h1>
     <input type="text" class="TinyPicker" id="startDate">
-    <input type="text" class="TinyPicker">
+    <input type="text" class="TinyPicker" id="endDate">
     <script src="../index.js"></script>
     <script>
         new TinyPicker({
-            // firstBox:document.getElementById('startDate'),
-            // lastBox: document.getElementById('endDate'),
+            firstBox:document.getElementById('startDate'),
+            lastBox: document.getElementById('endDate'),
             monthsToShow: 2,
-            preChoose:10,
             days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
-            selectToday: true,
-            local: 'es-US',
-        });
+            local: 'en-US',
+        }).init();
     </script>
 </body>
 </html>

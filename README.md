@@ -1,7 +1,8 @@
 # tiny-picker
 
-*Ultra light weight date picker. There are no external dependencies involved.*<br><br>
-![Optional Text](./docs/example.png)
+*Ultra light weight date picker. There are no external dependencies involved. We mimic jQuery UI Datepicker without the bloat*<br><br>
+View Demo here<br><br>
+![](./docs/example.png)
 ## Install
 
 ` npm install tiny-picker --save`
@@ -11,8 +12,8 @@
 Bind to input:
 
 ```html
-<input type="text" class="TinyPicker" />
-<input type="text" class="TinyPicker" />
+<input type="text" id="startDate" />
+<input type="text" id="endDate" />
 ```
 To have preselected dates:
 ```html
@@ -21,27 +22,37 @@ To have preselected dates:
 ```
 In Javascript:<br>
 ```js
-new TinyPicker();
-```
-<br><br>
-In HTML:<br>
-```js
-new window.TinyPicker();
+new TinyPicker({
+        firstBox:document.getElementById('startDate'),
+        lastBox: document.getElementById('endDate'),
+}).init();
 ```
 
 #### Options:
 *TinyPicker also takes in options as seen below*
 ```js
 new TinyPicker({
-            firstBox:document.getElementById('startDate'), // Overrides us finding the first input box
-            lastBox: document.getElementById('endDate'), // Overrides us finding the last input box
+            firstBox:document.getElementById('startDate'), // Required -- Overrides us finding the first input box
+            lastBox: document.getElementById('endDate'), // Required -- Overrides us finding the last input box
             monthsToShow: 2, // How many months to display
-            preChoose:10, // After the user selects the first date, how many days in the future do you want us to prehighlight
             days: ['Su','Mo','Tu','We','Th','Fr','Sa'], // Override for day abbreviations in the calendar
-            selectToday: true, // Allow the user to select the current date
             local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US
         });
 ```
+
+#### Color/Style Customizations
+
+Currently using standard jQuery colorizations. Just create overriding styles in your own CSS files to change. Classes are currently not specific so overriding should be a breeze!
+
+## Benchmarking Size (total NPM Package w/ dependencies):
+| Date Range Packages  | minified  |  Gzipped |
+| ------------- | ------------- | ------------- |
+| Tiny-picker  | 3.38kB |1.53kB
+| Pikaday  |232.1kB|66.8kB|
+| jquery-date-range-picker |353.3kB|105.6kB|
+| jquery-daterangepicker  |47.1kB|14.3kB|
+| moment  |220.9kB|62.4kB|
+| air-datepicker  |34.5kB|9.3kB|
 
 ## Developing and contributing to tiny-picker
 ### Folder structure
@@ -49,7 +60,7 @@ The main body of code is in `index.js`
 
 The tests are in the `test/spec` directory. Please follow naming convention with `xxxx.spec.js`
 
-### Running tests
+### Running tests - TODO
 
 We use [Feather-test](https://www.npmjs.com/package/feather-test) which is similar to jasmine for unit tests. Unless there is a very compelling reason to use something different, please continue using Feather for tests. The existing tests are in the spec folder. Here are some useful command shortcuts:
 
