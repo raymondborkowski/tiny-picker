@@ -44,16 +44,15 @@ new TinyPicker({
 
 Currently using standard jQuery colorizations. Just create overriding styles in your own CSS files to change. Classes are currently not specific so overriding should be a breeze!
 
-## Benchmarking Size (total NPM Package w/ dependencies):
+## Benchmarking Size (`npm package-size`):
 |Date Range Packages  | minified  |  Gzipped |
 | ------------- | ------------- | ------------- |
-| Tiny-picker  | 3.38kB |1.53kB
-| Pikaday  |232.1kB|66.8kB|
-| jquery-date-range-picker |353.3kB|105.6kB|
-| jquery-daterangepicker  |47.1kB|14.3kB|
-| moment  |220.9kB|62.4kB|
-| air-datepicker  |34.5kB|9.3kB|
-| tiny-date-picker  |9.5kB|3.4kB|
+| tiny-picker  | 3.31kB |1.43kB
+| Pikaday  |247kB|70.6kB|
+| jquery-date-range-picker |367kB|110kB|
+| moment  |232kB|65.1kB|
+| air-datepicker  |35.3kB|9.45kB|
+| tiny-date-picker  |9.8kB|3.42kB|
 
 ## Developing and contributing to tiny-picker
 ### Folder structure
