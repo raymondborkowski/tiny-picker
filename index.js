@@ -6,33 +6,27 @@
  *
  */
 
-function TinyPicker(settings) { // eslint-disable-line no-unused-vars
+function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     if (!(this instanceof TinyPicker)) {
-        return new TinyPicker(settings);
+        return new TinyPicker(overrides);
     }
 
-    var defaults = {
-        local: settings.local || 'en-US',
-        monthsToShow: window.innerWidth > 500 ? settings.monthsToShow || 2 : 1,
-        days: settings.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-    };
-
     var today = newDateInstance(newDateInstance().setHours(0, 0, 0, 0));
-    var firstBox = settings.firstBox;
-    var lastBox = settings.lastBox;
-    var startDate = firstBox.value === '' ? today : newDateInstance(firstBox.value);
-    var endDate = newDateInstance(lastBox.value);
+    var firstBox = overrides.firstBox;
+    var lastBox = overrides.lastBox;
     var calendarClassName = 'cal';
     var div = 'div';
     var selectedString = 'selected';
     var spanDateString = 'spanDate';
 
-    /*
-    *
-    * Visual
-    *
-    */
-
+    var startDate = firstBox.value === '' ? today : newDateInstance(firstBox.value);
+    var endDate = newDateInstance(lastBox.value);
+    var settings = {
+        local: overrides.local || 'en-US',
+        monthsToShow: window.innerWidth > 500 ? overrides.monthsToShow || 2 : 1,
+        days: overrides.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        cb: overrides.cb || function () {}
+    };
 
     function getChevrons(element, calendarObj) {
         var navWrapper = createElementWithClass(div, 'nav');
@@ -79,7 +73,7 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
         var monthsArr = [];
         var year = passedInDate.getFullYear();
         var monthNum = passedInDate.getMonth();
-        for (var i = 0; i < defaults.monthsToShow; i++) {
+        for (var i = 0; i < settings.monthsToShow; i++) {
             var date = new Date(year, monthNum + i, 1); // Get first day of the month
             var month = getDays(passedInDate, date, i); // Get the days that go in the month
             monthsArr.push(month);
@@ -103,6 +97,7 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
             endDate = date;
             removeCalendar(calendarClassName);
             shadowElement.classList.remove('error');
+            settings.cb(startDate, endDate);
         }
     }
 
@@ -125,7 +120,7 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
 
             var calendarContainer = createElementWithClass(div);
 
-            defaults.days.forEach(function (day) {
+            settings.days.forEach(function (day) {
                 var dayEl = createElementWithClass(div, 'dName');
                 dayEl.innerHTML = day;
                 appendChild(calendarContainer, dayEl);
@@ -174,15 +169,9 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
         return calendarBody;
     }
 
-    /*
-     *
-     * Data functions (Manipulation)
-     *
-     */
-
     function getDays(passedInDate, date, i) {
         var month = {
-            name: date.toLocaleString(defaults.local, { month: 'long'}),
+            name: date.toLocaleString(settings.local, { month: 'long'}),
             year: date.getFullYear(),
             weeks: []
         };
@@ -222,23 +211,6 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
         });
     }
 
-    // Init listeners to properly display calendar
-    this.init = function () {
-        [firstBox, lastBox].forEach(function (element) {
-            element.addEventListener('focus', function (e) {
-                showCalendar(e.target);
-            });
-            // TODO: Should this be here??? I can do this somewhere else
-            var timer;
-            element.addEventListener('keydown', function (e) {
-                clearTimeout(timer);
-                timer = setTimeout(function () {
-                    userInputedDateHandler(e.target);
-                }, 1000);
-            });
-        });
-    };
-
     // helper functions to minimize file size - can move out of TinyPicker
 
     function createElementWithClass(type, className) {
@@ -277,7 +249,7 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
     }
 
     function setDateInEl(date, shadowElement) {
-        shadowElement.value = date.toLocaleDateString(defaults.local);
+        shadowElement.value = date.toLocaleDateString(settings.local);
         handleCalendar(shadowElement, date);
     }
 
@@ -298,6 +270,28 @@ function TinyPicker(settings) { // eslint-disable-line no-unused-vars
         var element = getFirstElementByClass(className);
         element && document.body.removeChild(element);
     }
+
+    // Init listeners to properly display calendar
+    this.init = function () {
+        [firstBox, lastBox].forEach(function (element) {
+            element.addEventListener('focus', function (e) {
+                showCalendar(e.target);
+            });
+            // TODO: Should this be here??? I can do this somewhere else
+            var timer;
+            element.addEventListener('keydown', function (e) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    userInputedDateHandler(e.target);
+                }, 1000);
+            });
+        });
+    };
 }
 
-module.exports = TinyPicker;
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = TinyPicker;
+} else {
+    window.TinyPicker = TinyPicker;
+}

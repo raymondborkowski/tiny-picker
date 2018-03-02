@@ -36,7 +36,8 @@ new TinyPicker({
             lastBox: document.getElementById('endDate'), // Required -- Overrides us finding the last input box
             monthsToShow: 2, // How many months to display
             days: ['Su','Mo','Tu','We','Th','Fr','Sa'], // Override for day abbreviations in the calendar
-            local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US
+            local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US,
+            cb: function(startDate, endDate){} // callback function when user inputs dates
         });
 ```
 
