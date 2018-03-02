@@ -42,6 +42,10 @@
     margin: 15px 0 5px 0;
 }
 
+.spanDate {
+    background-color: #bbddf5;
+}
+
 .nav {
     margin: 0;
 }
@@ -79,7 +83,7 @@
 }
 
 .selected {
-    background-color: #bbddf5;
+    background-color: #50a5e6;
 }
 
 .error, .error:focus {

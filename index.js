@@ -161,7 +161,12 @@ function TinyPicker(settings) {
                         dayOfWeekEl.className =  'active';
 
                         if(isDaySelected(startDate, endDate, currentDate) && firstBox.value){
-                            dayOfWeekEl.className = 'selected';
+                            if (startDate.getTime() === currentDate.getTime() || endDate.getTime() === currentDate.getTime()) {
+                                dayOfWeekEl.className = 'selected';
+                            } else {
+                                dayOfWeekEl.className = 'spanDate';
+                            }
+
                         }
                         addClickListener(dayOfWeekEl, setDateInEl.bind(this, currentDate, element));
                     }
@@ -214,11 +219,25 @@ function TinyPicker(settings) {
 
             for (var i = 0; i < days.length; i++) {
                 var time = parseInt(days[i].getAttribute('time'), 10);
-
-                if (time <= hoverTime && time >= startTime) {
-                    days[i].classList.add('selected');
+                if ((document.activeElement === lastBox || lastBox.value === '') && firstBox.value !== '') {
+                    if (time <= hoverTime && time >= startTime) {
+                        if (hoverTime === startTime || time === hoverTime || time === startTime) {
+                            days[i].classList.add('selected');
+                        } else {
+                            days[i].classList.add('spanDate');
+                            days[i].classList.remove('selected');
+                        }
+                    } else {
+                        days[i].classList.remove('selected');
+                        days[i].classList.remove('spanDate');
+                    }
                 } else {
-                    days[i].classList.remove('selected');
+                    if ((time === hoverTime && firstBox.value === '') || time === hoverTime) {
+                        days[i].classList.add('selected');
+                    } else {
+                        days[i].classList.remove('selected');
+                        days[i].classList.remove('spanDate');
+                    }
                 }
             }
         });
