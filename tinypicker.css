@@ -82,7 +82,7 @@
     font-size: 14px;
 }
 
-.selected {
+.selected:not(.disabled) {
     background-color: #50a5e6;
 }
 
