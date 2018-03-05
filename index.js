@@ -94,23 +94,6 @@ function getMonthsInfoForCalendar(passedInDate, monthsToShow, local) {
     return monthsArr;
 }
 
-function getChevrons(element, calendarObj) {
-    var navWrapper = createElementWithClass('div', 'nav');
-
-    appendChild(navWrapper, createElementWithClass('span', 'rChev'));
-    appendChild(navWrapper, createElementWithClass('span', 'lChev'));
-
-    navWrapper.addEventListener('click', function (e) {
-        var monthChange = e.target.className === 'rChev' ? 1 : -1;
-        var firstWeek = calendarObj[0].weeks[0];
-        var date = firstWeek[Object.keys(firstWeek)[0]].date;
-        var newStartDate = newDateInstance(date.setMonth(date.getMonth() + monthChange));
-
-        showCalendar(element, newStartDate);
-    });
-    return navWrapper;
-}
-
 function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var firstBox = overrides.firstBox;
     var lastBox = overrides.lastBox;
@@ -197,6 +180,23 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
             shadowElement.classList.remove('err');
             settings.cb(startDate, endDate);
         }
+    }
+
+    function getChevrons(element, calendarObj) {
+        var navWrapper = createElementWithClass(div, 'nav');
+
+        appendChild(navWrapper, createElementWithClass('span', 'rChev'));
+        appendChild(navWrapper, createElementWithClass('span', 'lChev'));
+
+        navWrapper.addEventListener('click', function (e) {
+            var monthChange = e.target.className === 'rChev' ? 1 : -1;
+            var firstWeek = calendarObj[0].weeks[0];
+            var date = firstWeek[Object.keys(firstWeek)[0]].date;
+            var newStartDate = newDateInstance(date.setMonth(date.getMonth() + monthChange));
+
+            showCalendar(element, newStartDate);
+        });
+        return navWrapper;
     }
 
     function createCalInnerWorkings(weeks, sinceDate, element) {
