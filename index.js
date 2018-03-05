@@ -212,7 +212,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 } else {
                     dayOfWeekEl.className = 'disb';
                     var currentTime = getTime(currentDate);
-                    if (currentDate > today) {
+                    if (currentDate >= today) {
                         dayOfWeekEl.className =  'active';
                         dayOfWeekEl.addEventListener('click', setDateInEl.bind(this, currentDate, element));
 
