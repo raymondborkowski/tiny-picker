@@ -82,7 +82,7 @@
     font-size: 14px;
 }
 
-.sel:not(.tp-disb) {
+.sel:not(.disb) {
     background-color: #50a5e6;
 }
 

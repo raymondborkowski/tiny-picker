@@ -55,7 +55,136 @@ function positionCalendar(calendarElement, shadowElement) {
 
 function writeCSSToHead() {
     var styleEl = document.createElement('style');
-    styleEl.innerHTML = '.dHd,.day{float:left;text-align:center}.dHd,.day,.hed{text-align:center}.cal:after,.cal:before,.lChev:before,.rChev:before{content:\'\';display:inline-block}.cal:after,.cal:before,.mnt{display:inline-block}.cal,.cal:after,.cal:before,.lChev,.rChev{position:absolute}.cal{background:#fff;border:1px solid #ccc;z-index:1;padding:0;font-size:10px;border-radius:4px;box-shadow:0 6px 12px rgba(0,0,0,.175);color:#000;font-family:Arial,Helvetica,sans-serif}.cal:before{top:-7px;left:9px;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,.2)}.cal:after{top:-6px;left:10px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.hed{font-size:15px;font-weight:500;margin:15px 0 5px}.inBtw{background-color:#bbddf5}.nav{margin:0}.dHd{width:29.5px;color:#bbb;height:30px;line-height:30px;font-size:12px}.mnt{max-width:210px;width:auto;height:auto;padding:0 10px 10px}.day{border:none;width:28px;height:28px;line-height:28px;color:#555;cursor:pointer;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;font-size:14px}.sel:not(.tp-disb){background-color:#50a5e6}.err,.err:focus{outline:0!important;border:1px solid red;box-shadow:0 0 10px red}.disb{opacity:.7;color:#888;cursor:default}.lChev:before,.rChev:before{border-style:solid;border-width:3px 3px 0 0;height:7px;width:7px;cursor:pointer}.rChev:before{transform:rotate(45deg)}.lChev:before{transform:rotate(-135deg)}.lChev,.rChev{top:18px}.rChev{right:25px}.lChev{left:20px}';
+    styleEl.innerHTML = '.cal {\n' +
+        '    background: white;\n' +
+        '    border: 1px solid #ccc;\n' +
+        '    position: absolute;\n' +
+        '    z-index: 1;\n' +
+        '    padding: 0;\n' +
+        '    font-size: 10px;\n' +
+        '    border-radius: 4px;\n' +
+        '    box-shadow: 0 6px 12px rgba(0,0,0,0.175);\n' +
+        '    color: black;\n' +
+        '    font-family: Arial, Helvetica, sans-serif;\n' +
+        '\n' +
+        '}\n' +
+        '\n' +
+        '.cal:before {\n' +
+        '    position: absolute;\n' +
+        '    top: -7px;\n' +
+        '    left: 9px;\n' +
+        '    display: inline-block;\n' +
+        '    border-right: 7px solid transparent;\n' +
+        '    border-bottom: 7px solid #ccc;\n' +
+        '    border-left: 7px solid transparent;\n' +
+        '    border-bottom-color: rgba(0,0,0,0.2);\n' +
+        '    content: \'\';\n' +
+        '}\n' +
+        '\n' +
+        '.cal:after {\n' +
+        '    position: absolute;\n' +
+        '    top: -6px;\n' +
+        '    left: 10px;\n' +
+        '    display: inline-block;\n' +
+        '    border-right: 6px solid transparent;\n' +
+        '    border-bottom: 6px solid #fff;\n' +
+        '    border-left: 6px solid transparent;\n' +
+        '    content: "";\n' +
+        '}\n' +
+        '\n' +
+        '.hed {\n' +
+        '    font-size: 15px;\n' +
+        '    text-align: center;\n' +
+        '    font-weight: 500;\n' +
+        '    margin: 15px 0 5px 0;\n' +
+        '}\n' +
+        '\n' +
+        '.inBtw {\n' +
+        '    background-color: #bbddf5;\n' +
+        '}\n' +
+        '\n' +
+        '.nav {\n' +
+        '    margin: 0;\n' +
+        '}\n' +
+        '\n' +
+        '.dHd {\n' +
+        '    text-align: center;\n' +
+        '    float: left;\n' +
+        '    width: 29.5px;\n' +
+        '    color: #bbb;\n' +
+        '    height: 30px;\n' +
+        '    line-height: 30px;\n' +
+        '    font-size: 12px;\n' +
+        '}\n' +
+        '\n' +
+        '.mnt {\n' +
+        '    max-width: 210px;\n' +
+        '    width: auto;\n' +
+        '    height: auto;\n' +
+        '    display: inline-block;\n' +
+        '    padding: 0 10px 10px;\n' +
+        '}\n' +
+        '\n' +
+        '.day {\n' +
+        '    float: left;\n' +
+        '    text-align: center;\n' +
+        '    border: none;\n' +
+        '    width: 28px;\n' +
+        '    height: 28px;\n' +
+        '    line-height: 28px;\n' +
+        '    color: #555;\n' +
+        '    cursor: pointer;\n' +
+        '    border-right: 1.5px solid white;\n' +
+        '    border-bottom: 1.5px solid white;\n' +
+        '    font-size: 14px;\n' +
+        '}\n' +
+        '\n' +
+        '.sel:not(.disb) {\n' +
+        '    background-color: #50a5e6;\n' +
+        '}\n' +
+        '\n' +
+        '.err, .err:focus {\n' +
+        '    outline: none !important;\n' +
+        '    border:1px solid red;\n' +
+        '    box-shadow: 0 0 10px red;\n' +
+        '}\n' +
+        '\n' +
+        '.disb {\n' +
+        '    opacity: 0.7;\n' +
+        '    color: #888;\n' +
+        '    cursor: default;\n' +
+        '}\n' +
+        '\n' +
+        '.rChev:before, .lChev:before {\n' +
+        '    border-style: solid;\n' +
+        '    border-width: 3px 3px 0 0;\n' +
+        '    content: "";\n' +
+        '    display: inline-block;\n' +
+        '    height: 7px;\n' +
+        '    width: 7px;\n' +
+        '    cursor: pointer;\n' +
+        '}\n' +
+        '\n' +
+        '.rChev:before {\n' +
+        '    transform: rotate(45deg);\n' +
+        '}\n' +
+        '\n' +
+        '.lChev:before {\n' +
+        '    transform: rotate(-135deg);\n' +
+        '}\n' +
+        '\n' +
+        '.rChev, .lChev {\n' +
+        '    position: absolute;\n' +
+        '    top: 18px;\n' +
+        '}\n' +
+        '\n' +
+        '.rChev {\n' +
+        '    right: 25px;\n' +
+        '}\n' +
+        '\n' +
+        '.lChev {\n' +
+        '    left: 20px;\n' +
+        '}';
     document.head.appendChild(styleEl);
 }
 
@@ -218,7 +347,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 } else {
                     dayOfWeekEl.className = 'disb';
                     var currentTime = getTime(currentDate);
-                    if (currentDate >= today) {
+                    if ((currentDate >= today && element === firstBox) || currentDate >= startDate) {
                         dayOfWeekEl.className =  'active';
                         dayOfWeekEl.addEventListener('click', setDateInEl.bind(this, currentDate, element));
 
@@ -284,6 +413,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
             if (!element.nodeType) return;
             element.addEventListener('focus', function (e) {
                 !wroteCss && writeCSSToHead();
+                wroteCss = true;
                 showCalendar(e.target);
             });
             // TODO: Should this be here??? I can do this somewhere else
