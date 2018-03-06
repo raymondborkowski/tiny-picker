@@ -96,12 +96,13 @@ function getMonthsInfoForCalendar(passedInDate, monthsToShow, local) {
 
 function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var firstBox = overrides.firstBox;
-    var lastBox = overrides.lastBox;
+    var lastBox = overrides.lastBox || {};
     firstBox.value = overrides.fbv || '';
     lastBox.value =  overrides.lbv || '';
 
     // Settings and constants
     var today = newDateInstance(newDateInstance().setHours(0, 0, 0, 0));
+    var wroteCss = false;
     var calendarClassName = 'cal';
     var div = 'div';
     var selectedString = 'sel';
@@ -172,8 +173,13 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 endDate = date;
             }
             endDate = startDate;
-            lastBox.value = ''; // If user reenters startDate, force reselect of enddate
-            lastBox.focus();
+            if (lastBox.nodeType) {
+                lastBox.value = ''; // If user reenters startDate, force reselect of enddate
+                lastBox.focus();
+            } else {
+                removeCalendar(calendarClassName);
+                settings.cb(startDate);
+            }
         } else {
             endDate = date;
             removeCalendar(calendarClassName);
@@ -275,8 +281,9 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     // Init listeners to properly display calendar
     this.init = function () {
         [firstBox, lastBox].forEach(function (element) {
+            if (!element.nodeType) return;
             element.addEventListener('focus', function (e) {
-                writeCSSToHead();
+                !wroteCss && writeCSSToHead();
                 showCalendar(e.target);
             });
             // TODO: Should this be here??? I can do this somewhere else
