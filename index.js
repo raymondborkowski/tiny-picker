@@ -49,7 +49,7 @@ function isDateTodayOrFuture(currentDate, checkThisDate) {
 
 function positionCalendar(calendarElement, shadowElement) {
     var positions = shadowElement.getBoundingClientRect();
-    calendarElement.style.top  =  positions.top + positions.height + 15 + 'px';
+    calendarElement.style.top  =  positions.top + positions.height + (window.pageYOffset || document.documentElement.scrollTop) + 15 + 'px';
     calendarElement.style.left = positions.left + 'px';
 }
 
