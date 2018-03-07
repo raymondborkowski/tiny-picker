@@ -127,13 +127,16 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
         positionCalendar(getFirstElementByClass(calendarClassName), element);
 
         // Close the calendar listener
-        document.addEventListener('click', function (e) {
-            var el = e.target;
-            var calendarEl = getFirstElementByClass(calendarClassName);
-            if (calendarEl && !calendarEl.contains(getFirstElementByClass(el.className))) {
-                removeCalendar(calendarClassName);
-            }
+        ['click', 'touchend'].forEach(function(event) {
+            document.addEventListener(event, function (e) {
+                var el = e.target;
+                var calendarEl = getFirstElementByClass(calendarClassName);
+                if (calendarEl && !calendarEl.contains(getFirstElementByClass(el.className)) && el !== document.activeElement) {
+                    removeCalendar(calendarClassName);
+                }
+            });
         });
+
     }
 
     function renderCalendar(element, newDate) {
