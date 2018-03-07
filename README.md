@@ -15,11 +15,7 @@ Bind to input:
 <input type="text" id="startDate" />
 <input type="text" id="endDate" />
 ```
-To have preselected dates:
-```html
-    <input type="text" class="TinyPicker" id="startDate" value="2018-10-22">
-    <input type="text" class="TinyPicker" value="2018-11-04">
-```
+
 In Javascript:<br>
 ```js
 new TinyPicker({
@@ -34,10 +30,13 @@ new TinyPicker({
 new TinyPicker({
         firstBox:document.getElementById('startDate'), // Required -- Overrides us finding the first input box
         lastBox: document.getElementById('endDate'), // Required -- Overrides us finding the last input box
+        fbv: '2018-12-12' // string to auto fill first box
+        lbv: '2018-12-13' // string to auto fill last box
         monthsToShow: 2, // How many months to display
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'], // Override for day abbreviations in the calendar
         local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US,
-        cb: function(startDate, endDate){} // callback function when user inputs dates
+        cb: function(startDate, endDate){} // callback function when user inputs dates,
+        err: function(){} // callback fired when err state
 });
 ```
 
@@ -49,7 +48,7 @@ Currently using standard jQuery colorizations. Just create overriding styles in 
 |Date Range Packages  | minified  |  Gzipped |
 | ------------- | ------------- | ------------- |
 | tiny-picker  | 3.31kB |1.43kB
-| tiny-picker + css  | 4.74kB |2.03kB
+| tiny-picker + css  | 4.9kB |2.27kB
 | Pikaday  |247kB|70.6kB|
 | jquery-date-range-picker |367kB|110kB|
 | moment  |232kB|65.1kB|
