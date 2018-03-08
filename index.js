@@ -253,7 +253,8 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 var day = days[i];
                 var elTime = parseInt(day.getAttribute('time'), 10);
 
-                day.classList.remove(selectedString, selectedRangeString);
+                day.classList.remove(selectedString);
+                day.classList.remove(selectedRangeString);
                 if (inputClicked === lastBox && elTime < hoverTime && elTime > startTime) {
                     addClass(day, selectedRangeString);
                 } else if (hoverTime === elTime || (elTime === startTime && inputClicked !== firstBox)) {
