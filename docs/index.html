@@ -5,30 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <h1>Tiny-picker</h1>
-    <input type="text" class="TinyPicker" id="startDate">
-    <input type="text" class="TinyPicker" id="startDate1">
-    <input type="text" class="TinyPicker" id="endDate1">
-    <script src="../index.js"></script>
-    <script>
-        new TinyPicker({
-            firstBox:document.getElementById('startDate'),
-            fbv: '03-06-18',
-            months: 2,
-            days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
-            local: 'en-US',
-            cb: function(s, e){ alert(s + ' ' + e); }
-        }).init();
-        new TinyPicker({
-            firstBox:document.getElementById('startDate1'),
-            fbv: '06-16-19',
-            lbv: '07-04-19',
-            lastBox: document.getElementById('endDate1'),
-            months: 3,
-            days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
-            local: 'en-US',
-            cb: function(s, e){ alert(s + ' ' + e); }
-        }).init();
-    </script>
+<h1>Tiny-picker</h1>
+<input type="text" class="TinyPicker" id="startDate">
+<input type="text" class="TinyPicker" id="startDate1">
+<input type="text" class="TinyPicker" id="endDate1">
+<script src="../index.js"></script>
+<script>
+    new TinyPicker({
+        firstBox:document.getElementById('startDate'),
+        fbv: '03/20/2018',
+        months: 2,
+        days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
+        local: 'en-US',
+        cb: function(s, e){ alert(s + ' ' + e); }
+    }).init();
+    new TinyPicker({
+        firstBox:document.getElementById('startDate1'),
+        fbv: '06/16/2019',
+        lbv: '07/04/2019',
+        lastBox: document.getElementById('endDate1'),
+        months: 3,
+        days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
+        local: 'en-US',
+        cb: function(s, e){ alert(s + ' ' + e); }
+    }).init();
+</script>
 </body>
 </html>

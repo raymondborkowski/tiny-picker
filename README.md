@@ -30,8 +30,8 @@ new TinyPicker({
 new TinyPicker({
         firstBox:document.getElementById('startDate'), // Required -- Overrides us finding the first input box
         lastBox: document.getElementById('endDate'), // Required -- Overrides us finding the last input box
-        fbv: '2018-12-12' // string to auto fill first box
-        lbv: '2018-12-13' // string to auto fill last box
+        fbv: '2018-12-12' // Needs to be a valid date string to auto fill first box
+        lbv: '2018-12-13' // Needs to be a valid date string to auto fill last box
         monthsToShow: 2, // How many months to display
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'], // Override for day abbreviations in the calendar
         local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US,
