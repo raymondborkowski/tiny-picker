@@ -13,7 +13,7 @@
 <script>
     new TinyPicker({
         firstBox:document.getElementById('startDate'),
-        fbv: '03/20/2018',
+        fbv: new Date('03/20/2018'),
         months: 2,
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
         local: 'en-US',
@@ -21,8 +21,8 @@
     }).init();
     new TinyPicker({
         firstBox:document.getElementById('startDate1'),
-        fbv: '06/16/2019',
-        lbv: '07/04/2019',
+        fbv: new Date('06/16/2019'),
+        lbv: new Date('07/04/2019'),
         lastBox: document.getElementById('endDate1'),
         months: 3,
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'],

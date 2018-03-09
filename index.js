@@ -97,18 +97,6 @@ function getMonthsInfoForCalendar(passedInDate, monthsToShow, local) {
 function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var firstBox = overrides.firstBox;
     var lastBox = overrides.lastBox || {};
-    firstBox.value = overrides.fbv || '';
-    lastBox.value =  overrides.lbv || '';
-
-    // Settings and constants
-    var today = newDateInstance(newDateInstance().setHours(0, 0, 0, 0));
-    var wroteCss = false;
-    var calendarClassName = 'cal';
-    var div = 'div';
-    var selectedString = 'sel';
-    var selectedRangeString = 'inBtw';
-    var startDate = firstBox.value === '' ? today : newDateInstance(firstBox.value);
-    var endDate = newDateInstance(lastBox.value);
     var settings = {
         local: overrides.local || 'en-US',
         months: window.innerWidth > 500 ? overrides.months || 2 : 1,
@@ -116,6 +104,18 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
         cb: overrides.cb || function () {},
         err: overrides.err || function () {}
     };
+    var initialDateSet = true;
+    setDateInEl(overrides.fbv, firstBox, initialDateSet);
+    setDateInEl(overrides.lbv, lastBox, initialDateSet);
+    // Settings and constants
+    var today = newDateInstance(newDateInstance().setHours(0, 0, 0, 0));
+    var wroteCss = false;
+    var calendarClassName = 'cal';
+    var div = 'div';
+    var selectedString = 'sel';
+    var selectedRangeString = 'inBtw';
+    var startDate = firstBox.value === '' ? today : newDateInstance(overrides.fbv);
+    var endDate = newDateInstance(overrides.lbv);
 
     function showCalendar(element, newStartDate) {
         if (!newStartDate) {
@@ -221,7 +221,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                     var currentTime = getTime(currentDate);
                     if ((currentDate >= today && element === firstBox) || currentDate >= startDate) {
                         dayOfWeekEl.className =  'active';
-                        dayOfWeekEl.addEventListener('click', setDateInEl.bind(this, currentDate, element));
+                        dayOfWeekEl.addEventListener('click', setDateInEl.bind(this, currentDate, element, false));
 
                         // Add Highlights to days
                         if (endDate > currentDate && startDate < currentDate) {
@@ -266,9 +266,15 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
 
     // Specific helpers for TinyPicker
 
-    function setDateInEl(date, shadowElement) {
-        shadowElement.value = date.toLocaleDateString(settings.local);
-        handleCalendarState(shadowElement, date);
+    function setDateInEl(date, shadowElement, initial) {
+        initial = initial || false;
+        if (date instanceof Date && shadowElement instanceof HTMLElement) {
+            shadowElement.value = date.toLocaleDateString(settings.local);
+            shadowElement.setAttribute('date', getTime(date));
+        }
+        if (!initial) {
+            handleCalendarState(shadowElement, date);
+        }
     }
 
     function userInputedDateHandler(element) {
@@ -280,7 +286,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
             element.value = '';
             settings.err();
         }
-        isDateTodayOrFuture(userInputedDate, today) && setDateInEl(userInputedDate, element);
+        isDateTodayOrFuture(userInputedDate, today) && setDateInEl(userInputedDate, element, false);
     }
 
     // Init listeners to properly display calendar
