@@ -116,7 +116,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var selectedRangeString = 'inBtw';
     var startDate = firstBox.value === '' ? today : newDateInstance(overrides.startDate);
     var endDate = overrides.endDate;
-    endDate = newDateInstance(endDate && endDate.setHours(0, 0, 0, 0) || undefined);
+    endDate = newDateInstance(endDate && endDate.setHours(0, 0, 0, 0) || '');
 
     function showCalendar(element, newStartDate) {
         if (!newStartDate) {
@@ -128,7 +128,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
         positionCalendar(getFirstElementByClass(calendarClassName), element);
 
         // Close the calendar listener
-        ['click', 'touchend'].forEach(function(event) {
+        ['click', 'touchend'].forEach(function (event) {
             document.addEventListener(event, function (e) {
                 var el = e.target;
                 var calendarEl = getFirstElementByClass(calendarClassName);
@@ -137,7 +137,6 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 }
             });
         });
-
     }
 
     function renderCalendar(element, newDate) {
