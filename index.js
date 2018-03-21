@@ -114,7 +114,8 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var div = 'div';
     var selectedString = 'sel';
     var selectedRangeString = 'inBtw';
-    var startDate = firstBox.value === '' ? today : newDateInstance(overrides.startDate);
+    var startDate = overrides.startDate;
+    startDate = firstBox.value === '' ? today : newDateInstance(startDate && startDate.setHours(0, 0, 0, 0) || '');
     var endDate = overrides.endDate;
     endDate = newDateInstance(endDate && endDate.setHours(0, 0, 0, 0) || '');
 
