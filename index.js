@@ -101,12 +101,12 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
         local: overrides.local || 'en-US',
         months: window.innerWidth > 500 ? overrides.months || 2 : 1,
         days: overrides.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-        cb: overrides.cb || function () {},
+        success: overrides.success || function () {},
         err: overrides.err || function () {}
     };
     var initialDateSet = true;
-    setDateInEl(overrides.fbv, firstBox, initialDateSet);
-    setDateInEl(overrides.lbv, lastBox, initialDateSet);
+    setDateInEl(overrides.startDate, firstBox, initialDateSet);
+    setDateInEl(overrides.endDate, lastBox, initialDateSet);
     // Settings and constants
     var today = newDateInstance(newDateInstance().setHours(0, 0, 0, 0));
     var wroteCss = false;
@@ -114,8 +114,9 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var div = 'div';
     var selectedString = 'sel';
     var selectedRangeString = 'inBtw';
-    var startDate = firstBox.value === '' ? today : newDateInstance(overrides.fbv);
-    var endDate = newDateInstance(overrides.lbv);
+    var startDate = firstBox.value === '' ? today : newDateInstance(overrides.startDate);
+    var endDate = overrides.endDate;
+    endDate = newDateInstance(endDate && endDate.setHours(0, 0, 0, 0) || undefined);
 
     function showCalendar(element, newStartDate) {
         if (!newStartDate) {
@@ -179,13 +180,13 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 lastBox.focus();
             } else {
                 removeCalendar(calendarClassName);
-                settings.cb(startDate);
+                settings.success(startDate);
             }
         } else {
             endDate = date;
             removeCalendar(calendarClassName);
             shadowElement.classList.remove('err');
-            settings.cb(startDate, endDate);
+            settings.success(startDate, endDate);
         }
     }
 

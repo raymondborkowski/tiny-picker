@@ -13,21 +13,22 @@
 <script>
     new TinyPicker({
         firstBox:document.getElementById('startDate'),
-        fbv: new Date('03/20/2018'),
+        startDate: new Date('03/20/2018'),
         months: 2,
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
         local: 'en-US',
-        cb: function(s, e){ alert(s + ' ' + e); }
+        success: function(s, e){ alert(s + ' ' + e); }
     }).init();
     new TinyPicker({
         firstBox:document.getElementById('startDate1'),
-        fbv: new Date('06/16/2019'),
-        lbv: new Date('07/04/2019'),
+        startDate: new Date('06/16/2019'),
+        endDate: new Date('07/04/2019'),
         lastBox: document.getElementById('endDate1'),
         months: 3,
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
         local: 'en-US',
-        cb: function(s, e){ alert(s + ' ' + e); }
+        success: function(s, e){ alert(s + ' ' + e); },
+        err: function(){alert('err');}
     }).init();
 </script>
 </body>
