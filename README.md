@@ -1,4 +1,6 @@
 # tiny-picker
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker?ref=badge_shield)
+
 
 *Ultra light weight date picker. There are no external dependencies involved. We mimic jQuery UI Datepicker without the bloat*<br><br>
 View Demo here<br><br>
@@ -85,3 +87,6 @@ We use ESLint for syntax consistency, and the linting rules are included in this
 ## License
 
 [MIT](https://github.com/raymondborkowski/4loop/blob/master/LICENSE)
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker?ref=badge_large)
