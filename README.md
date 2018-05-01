@@ -1,7 +1,17 @@
 # tiny-picker
+[![NPM](https://nodei.co/npm/tiny-picker.png)](https://nodei.co/npm/tiny-picker/)
+
+[![NPM version](https://img.shields.io/npm/v/tiny-picker.svg?style=flat-square)](https://www.npmjs.com/package/tiny-picker)
+[![dependencies](https://david-dm.org/raymondborkowski/tiny-picker.svg)](https://david-dm.org/raymondborkowski/tiny-picker)
+[![Build](https://travis-ci.org/raymondborkowski/tiny-picker.svg?branch=master)](https://travis-ci.org/raymondborkowski/tiny-picker)
+[![codecov.io](https://codecov.io/github/raymondborkowski/tiny-picker/coverage.svg?branch=master)](https://codecov.io/github/raymondborkowski/tiny-picker?branch=master)
+[![gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tiny-picker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![devDependencies](https://david-dm.org/raymondborkowski/tiny-picker/dev-status.svg)](https://david-dm.org/raymondborkowski/tiny-picker#info=devDependencies)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker?ref=badge_shield)
+[![downloads](https://img.shields.io/npm/dt/tiny-picker.svg)](https://img.shields.io/npm/dt/tiny-picker.svg)
 
 *Ultra light weight date picker. There are no external dependencies involved. We mimic jQuery UI Datepicker without the bloat*<br><br>
-View Demo here<br><br>
+[View Demo](https://raymondborkowski.github.io/tiny-complete/index.html)
 ![](./docs/example.png)
 ## Install
 
@@ -32,6 +42,7 @@ new TinyPicker({
         lastBox: document.getElementById('endDate'), // Required -- Overrides us finding the last input box
         startDate: new Date(), // Needs to be a valid instance of Date
         endDate: new Date(), // Needs to be a valid instance of Date
+        allowPast: true, // If you want the user to be able to select past dates
         monthsToShow: 2, // How many months to display
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'], // Override for day abbreviations in the calendar
         local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US,
@@ -60,19 +71,17 @@ Currently using standard jQuery colorizations. Just create overriding styles in 
 ### Folder structure
 The main body of code is in `index.js`
 
-The tests are in the `test/spec` directory. Please follow naming convention with `xxxx.spec.js`
+The tests are in the `spec/unit` directory. Please follow naming convention with `xxxx.spec.js`
 
-### Running tests - TODO
+### Running tests
 
-We use [Feather-test](https://www.npmjs.com/package/feather-test) which is similar to jasmine for unit tests. Unless there is a very compelling reason to use something different, please continue using Feather for tests. The existing tests are in the spec folder. Here are some useful command shortcuts:
+We use [Jasmine](https://jasmine.github.io/api/3.0/global) The existing tests are in the spec folder.
+
+Please write tests for new additions. We use codecov to test for complete unit test coverage.
 
 #### Run all the tests:
 
 `npm test`
-
-#### Run only some tests:
-
-`npm test --run=nameOfFile`
 
 ### Before submitting a pull request
 
@@ -84,4 +93,7 @@ We use ESLint for syntax consistency, and the linting rules are included in this
 
 ## License
 
-[MIT](https://github.com/raymondborkowski/4loop/blob/master/LICENSE)
+[MIT](https://github.com/raymondborkowski/tiny-picker/blob/master/LICENSE.md)
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fraymondborkowski%2Ftiny-picker?ref=badge_large)
