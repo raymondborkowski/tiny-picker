@@ -99,6 +99,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var lastBox = overrides.lastBox || {};
     var settings = {
         local: overrides.local || 'en-US',
+        selectPast: overrides.allowPast || false,
         months: window.innerWidth > 500 ? overrides.months || 2 : 1,
         days: overrides.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
         success: overrides.success || function () {},
@@ -124,7 +125,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
             newStartDate = element === firstBox ? startDate : new Date(endDate.getFullYear(), endDate.getMonth());
         }
 
-        newStartDate = isDateTodayOrFuture(newStartDate, today) ? newStartDate : today;
+        newStartDate = isDateTodayOrFuture(newStartDate, today) || settings.selectPast ? newStartDate : today;
         renderCalendar(element, newStartDate);
         positionCalendar(getFirstElementByClass(calendarClassName), element);
 
@@ -220,7 +221,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 } else {
                     dayOfWeekEl.className = 'disb';
                     var currentTime = getTime(currentDate);
-                    if ((currentDate >= today && element === firstBox) || currentDate >= startDate) {
+                    if ((currentDate >= today && element === firstBox) || currentDate >= startDate || settings.selectPast) {
                         dayOfWeekEl.className =  'active';
                         dayOfWeekEl.addEventListener('click', setDateInEl.bind(this, currentDate, element, false));
 
