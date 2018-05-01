@@ -11,7 +11,7 @@
 [![downloads](https://img.shields.io/npm/dt/tiny-picker.svg)](https://img.shields.io/npm/dt/tiny-picker.svg)
 
 *Ultra light weight date picker. There are no external dependencies involved. We mimic jQuery UI Datepicker without the bloat*<br><br>
-[View Demo](https://raymondborkowski.github.io/tiny-complete/index.html)
+[View Demo](https://raymondborkowski.github.io/tiny-picker/index.html)
 ![](./docs/example.png)
 ## Install
 
