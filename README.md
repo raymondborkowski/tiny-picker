@@ -12,7 +12,7 @@
 
 *Ultra light weight date picker. There are no external dependencies involved. We mimic jQuery UI Datepicker without the bloat*<br><br>
 [View Demo](https://raymondborkowski.github.io/tiny-picker/index.html)<br><br>
-![](./docs/example.png)
+![](https://raw.githubusercontent.com/raymondborkowski/tiny-picker/master/docs/example.png)
 ## Install
 
 ` npm install tiny-picker --save`
