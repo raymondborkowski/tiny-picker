@@ -3,12 +3,10 @@
   "version": "2.0.4",
   "description": "Ultra light weight date picker",
   "scripts": {
-    "test": "node test/run.js",
-    "lint_src": "./node_modules/.bin/eslint index.js --color",
-    "lint_test": "./node_modules/.bin/eslint test/ --color",
-    "lint_fix": "./node_modules/.bin/eslint index.js test/ --color --fix",
-    "lint": "npm run lint_src && npm run lint_test",
-    "build": "npm lint && npm run test"
+    "lint": "./node_modules/.bin/eslint .",
+    "coverage": "./node_modules/.bin/istanbul cover node_modules/jasmine/bin/jasmine.js && codecov",
+    "test": "./node_modules/.bin/jasmine && npm run lint && npm run coverage",
+    "deploy": "npm run test && npm publish"
   },
   "repository": {
     "type": "git",
@@ -20,16 +18,22 @@
     "picker"
   ],
   "author": "Raymond Borkowski",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/raymondborkowski/tiny-picker/issues"
   },
   "homepage": "https://github.com/raymondborkowski/tiny-picker#readme",
   "devDependencies": {
-    "babel-eslint": "^8.2.2",
-    "eslint": "^4.18.1",
+    "babel-eslint": "^8.0.1",
+    "codecov": "^3.0.0",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb-es5": "^1.2.0",
-    "eslint-plugin-react": "^7.7.0"
+    "eslint-plugin-jasmine": "^2.9.3",
+    "eslint-plugin-react": "^7.4.0",
+    "istanbul": "^0.4.5",
+    "jasmine": "^3.1.0",
+    "jsdom": "^11.8.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "main": "index.js"
 }
