@@ -1,6 +1,6 @@
 {
   "name": "tiny-picker",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Ultra light weight date picker",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
