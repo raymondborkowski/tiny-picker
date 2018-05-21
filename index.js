@@ -99,6 +99,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var lastBox = overrides.lastBox || {};
     var settings = {
         local: overrides.local || 'en-US',
+        localOpts: overrides.localOpts || {},
         selectPast: overrides.allowPast || false,
         months: window.innerWidth > 500 ? overrides.months || 2 : 1,
         days: overrides.days || ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
@@ -178,6 +179,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
             endDate = startDate;
             if (lastBox.nodeType) {
                 lastBox.value = ''; // If user reenters startDate, force reselect of enddate
+                lastBox.innerHTML = '';
                 lastBox.focus();
             } else {
                 removeCalendar(calendarClassName);
@@ -271,7 +273,8 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     function setDateInEl(date, shadowElement, initial) {
         initial = initial || false;
         if (date instanceof Date && shadowElement instanceof HTMLElement) {
-            shadowElement.value = date.toLocaleDateString(settings.local);
+            shadowElement.value = date.toLocaleDateString(settings.local, settings.localOpts);
+            shadowElement.innerHTML = date.toLocaleDateString(settings.local, settings.localOpts);
             shadowElement.setAttribute('date', getTime(date));
         }
         if (!initial) {
@@ -307,11 +310,6 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 timer = setTimeout(function () {
                     userInputedDateHandler(e.target);
                 }, 1000);
-            });
-
-            // Stop if you click on input
-            element.addEventListener('click', function (e) {
-                e.stopPropagation();
             });
         });
     };
