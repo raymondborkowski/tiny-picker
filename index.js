@@ -55,7 +55,7 @@ function positionCalendar(calendarElement, shadowElement) {
 
 function writeCSSToHead() {
     var styleEl = document.createElement('style');
-    styleEl.innerHTML = '.dHd,.day{float:left;text-align:center}.dHd,.day,.hed{text-align:center}.cal,.cal:after,.cal:before,.lChev,.rChev{position:absolute}.cal{background:#fff;border:1px solid #ccc;z-index:1;padding:0;font-size:10px;border-radius:4px;box-shadow:0 6px 12px rgba(0,0,0,.175);color:#000;font-family:Arial,Helvetica,sans-serif}.cal:before{top:-7px;left:9px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,.2);content:\'\'}.cal:after,.lChev:before,.rChev:before{content:"";display:inline-block}.cal:after{top:-6px;left:10px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.hed{font-size:15px;font-weight:500;margin:15px 0 5px}.inBtw{background-color:#bbddf5}.nav{margin:0}.dHd{width:29.5px;color:#bbb;height:30px;line-height:30px;font-size:12px}.mnt{max-width:210px;width:auto;height:auto;display:inline-block;padding:0 10px 10px}.day{border:none;width:28px;height:28px;line-height:28px;color:#555;cursor:pointer;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;font-size:14px}.sel:not(.disb){background-color:#50a5e6}.disb{opacity:.7;color:#888;cursor:default}.lChev:before,.rChev:before{border-style:solid;border-width:3px 3px 0 0;height:7px;width:7px;cursor:pointer}.rChev:before{transform:rotate(45deg)}.lChev:before{transform:rotate(-135deg)}.lChev,.rChev{top:18px}.rChev{right:25px}.lChev{left:20px}';
+    styleEl.innerHTML = '.dHd,.day{float:left;text-align:center}.tp-cc{width:auto}.dHd,.day,.hed{text-align:center}.cal,.cal:after,.cal:before,.lChev,.rChev{position:absolute}.cal{background:#fff;max-height:310px;overflow:scroll;width:auto;border:1px solid #ccc;z-index:1;padding:0;font-size:10px;border-radius:4px;box-shadow:0 6px 12px rgba(0,0,0,.175);color:#000;font-family:Arial,Helvetica,sans-serif}.cal:before{top:-7px;left:9px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,.2);content:\'\'}.cal:after,.lChev:before,.rChev:before{content:"";display:inline-block}.cal:after{top:-6px;left:10px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.hed{font-size:15px;font-weight:500;margin:15px 0 5px}.inBtw{background-color:#bbddf5}.nav{margin:0}.dHd{width:29.5px;color:#bbb;height:30px;line-height:30px;font-size:12px}.mnt{max-width:210px;width:auto;height:auto;display:inline-block;padding:0 10px 10px}.day{border:none;width:28px;height:28px;line-height:28px;color:#555;cursor:pointer;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;font-size:14px}.sel:not(.disb){background-color:#50a5e6}.disb{opacity:.7;color:#888;cursor:default}.lChev:before,.rChev:before{border-style:solid;border-width:3px 3px 0 0;height:7px;width:7px;cursor:pointer}.rChev:before{transform:rotate(45deg)}.lChev:before{transform:rotate(-135deg)}.lChev,.rChev{top:18px}.rChev{right:25px}.lChev{left:20px}';
     document.head.appendChild(styleEl);
 }
 
@@ -159,7 +159,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
             monthHeader.innerHTML = month.name + ' ' + month.year;
             appendChild(monthDiv, monthHeader);
 
-            var calendarContainer = createElementWithClass(div);
+            var calendarContainer = createElementWithClass(div, 'tp-cc');
 
             settings.days.forEach(function (day) {
                 var dayEl = createElementWithClass(div, 'dHd');
@@ -211,7 +211,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     }
 
     function createCalInnerWorkings(weeks, sinceDate, element) {
-        var calendarBody = createElementWithClass(div);
+        var calendarBody = createElementWithClass(div, 'tp-cc');
 
         weeks.forEach(function (week) {
             for (var i = 0; i < 7; i++) {
