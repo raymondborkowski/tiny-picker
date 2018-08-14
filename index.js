@@ -8,12 +8,6 @@
 
 // helper functions to minimize file size - can move out of TinyPicker
 
-function createElementWithClass(type, className) {
-    var el = document.createElement(type);
-    el.className = className || '';
-    return el;
-}
-
 function appendChild(parent, child) {
     parent.appendChild(child);
 }
@@ -53,9 +47,15 @@ function positionCalendar(calendarElement, shadowElement) {
     calendarElement.style.left = positions.left + 'px';
 }
 
-function writeCSSToHead() {
+function writeCSSToHead(overrideClass) {
     var styleEl = document.createElement('style');
-    styleEl.innerHTML = '.dHd,.day{float:left;text-align:center}.tp-cc{width:auto}.dHd,.day,.hed{text-align:center}.cal,.cal:after,.cal:before,.lChev,.rChev{position:absolute}.cal{background:#fff;max-height:310px;overflow:scroll;width:auto;border:1px solid #ccc;z-index:1;padding:0;font-size:10px;border-radius:4px;box-shadow:0 6px 12px rgba(0,0,0,.175);color:#000;font-family:Arial,Helvetica,sans-serif}.cal:before{top:-7px;left:9px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,.2);content:\'\'}.cal:after,.lChev:before,.rChev:before{content:"";display:inline-block}.cal:after{top:-6px;left:10px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.hed{font-size:15px;font-weight:500;margin:15px 0 5px}.inBtw{background-color:#bbddf5}.nav{margin:0}.dHd{width:29.5px;color:#bbb;height:30px;line-height:30px;font-size:12px}.mnt{max-width:210px;width:auto;height:auto;display:inline-block;padding:0 10px 10px}.day{border:none;width:28px;height:28px;line-height:28px;color:#555;cursor:pointer;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;font-size:14px}.sel:not(.disb){background-color:#50a5e6}.disb{opacity:.7;color:#888;cursor:default}.lChev:before,.rChev:before{border-style:solid;border-width:3px 3px 0 0;height:7px;width:7px;cursor:pointer}.rChev:before{transform:rotate(45deg)}.lChev:before{transform:rotate(-135deg)}.lChev,.rChev{top:18px}.rChev{right:25px}.lChev{left:20px}';
+    var css = '.dHd,.day{float:left;text-align:center}.tp-cc{width:auto}.dHd,.day,.hed{pointer-events:none;text-align:center}div.cal,div.cal:after,div.cal:before,.lChev,.rChev{position:absolute}div.cal{background:#fff;max-height:310px;overflow:scroll;width:auto;border:1px solid #ccc;z-index:1;padding:0;font-size:10px;border-radius:4px;box-shadow:0 6px 12px rgba(0,0,0,.175);color:#000;font-family:Arial,Helvetica,sans-serif}div.cal:before{top:-7px;left:9px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,.2);content:\'\'}div.cal:after,.lChev:before,.rChev:before{content:"";display:inline-block}div.cal:after{top:-6px;left:10px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.hed{font-size:15px;font-weight:500;margin:15px 0 5px}.inBtw{background-color:#bbddf5}.nav{margin:0}.dHd{width:29.5px;color:#bbb;height:30px;line-height:30px;font-size:12px}.mnt{box-sizing:content-box;max-width:210px;width:auto;height:auto;display:inline-block;padding:0 10px 10px}.day{pointer-events:auto;border:none;width:28px;height:28px;line-height:28px;color:#555;cursor:pointer;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;font-size:14px}.active.sel.day{background-color:#50a5e6}.disb{opacity:.7;color:#888;cursor:default}.lChev:before,.rChev:before{border-style:solid;border-width:3px 3px 0 0;height:7px;width:7px;cursor:pointer}.rChev:before{transform:rotate(45deg)}.lChev:before{transform:rotate(-135deg)}.lChev,.rChev{top:18px}.rChev{right:25px}.lChev{left:20px}';
+    if (overrideClass) {
+        css = css.replace(/\.[a-z_-][\w-]*(?=[^{}]*{[^{}]*})/ig, function (matched){
+            return matched + '.' + overrideClass;
+        });
+    }
+    styleEl.innerHTML = css;
     document.head.appendChild(styleEl);
 }
 
@@ -112,6 +112,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     // Settings and constants
     var today = newDateInstance(newDateInstance().setHours(0, 0, 0, 0));
     var wroteCss = false;
+    var overrideClass = overrides.overrideClass || '';
     var calendarClassName = 'cal';
     var div = 'div';
     var selectedString = 'sel';
@@ -120,6 +121,12 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     startDate = firstBox.value === '' ? today : newDateInstance(startDate && startDate.setHours(0, 0, 0, 0) || '');
     var endDate = overrides.endDate;
     endDate = newDateInstance(endDate && endDate.setHours(0, 0, 0, 0) || '');
+
+    function createElementWithClass(type, className) {
+        var el = document.createElement(type);
+        el.className = className + ' ' + overrideClass;
+        return el;
+    }
 
     function showCalendar(element, newStartDate) {
         if (!newStartDate) {
@@ -200,7 +207,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
         appendChild(navWrapper, createElementWithClass('span', 'lChev'));
 
         navWrapper.addEventListener('click', function (e) {
-            var monthChange = e.target.className === 'rChev' ? 1 : -1;
+            var monthChange = e.target.className === 'rChev ' + overrideClass ? 1 : -1;
             var firstWeek = calendarObj[0].weeks[0];
             var date = firstWeek[Object.keys(firstWeek)[0]].date;
             var newStartDate = newDateInstance(date.setMonth(date.getMonth() + monthChange));
@@ -221,10 +228,10 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                 if (typeof currentDate === 'undefined') {
                     appendChild(calendarBody, dayOfWeekEl);
                 } else {
-                    dayOfWeekEl.className = 'disb';
+                    dayOfWeekEl.className = 'disb ' + overrideClass;
                     var currentTime = getTime(currentDate);
                     if ((currentDate >= today && element === firstBox) || currentDate >= startDate || settings.selectPast) {
-                        dayOfWeekEl.className =  'active';
+                        dayOfWeekEl.className =  'active ' + overrideClass;
                         dayOfWeekEl.addEventListener('click', setDateInEl.bind(this, currentDate, element, false));
 
                         // Add Highlights to days
@@ -299,7 +306,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
         [firstBox, lastBox].forEach(function (element) {
             if (!element.nodeType) return;
             element.addEventListener('focus', function (e) {
-                !wroteCss && writeCSSToHead();
+                !wroteCss && writeCSSToHead(overrideClass);
                 wroteCss = true;
                 showCalendar(e.target);
             });

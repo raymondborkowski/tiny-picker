@@ -45,6 +45,7 @@ new TinyPicker({
         allowPast: true, // If you want the user to be able to select past dates
         monthsToShow: 2, // How many months to display
         days: ['Su','Mo','Tu','We','Th','Fr','Sa'], // Override for day abbreviations in the calendar
+        overrideClass: 'MY_SPECIAL_CLASS', // to make elements more specific
         local: 'es-US', // Specifiy the language and date format. < IE 10 defaults to en-US,
         success: function(startDate, endDate){} // callback function when user inputs dates,
         err: function(){} // callback fired when err state
