@@ -47,8 +47,12 @@ function positionCalendar(calendarElement, shadowElement) {
     calendarElement.style.left = positions.left + 'px';
 }
 
-function writeCSSToHead(overrideClass) {
+function writeCSSToHead(overrideClass, styleClass) {
+    // Protect against double-appending the styles.
+    if (document.getElementsByClassName(styleClass).length) { return; }
+
     var styleEl = document.createElement('style');
+    styleEl.className = styleClass;
     var css = '.dHd,.day{float:left;text-align:center}.tp-cc{width:auto}.dHd,.day,.hed{pointer-events:none;text-align:center}div.cal,div.cal:after,div.cal:before,.lChev,.rChev{position:absolute}div.cal{background:#fff;max-height:310px;overflow:scroll;width:auto;border:1px solid #ccc;z-index:1;padding:0;font-size:10px;border-radius:4px;box-shadow:0 6px 12px rgba(0,0,0,.175);color:#000;font-family:Arial,Helvetica,sans-serif}div.cal:before{top:-7px;left:9px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,.2);content:\'\'}div.cal:after,.lChev:before,.rChev:before{content:"";display:inline-block}div.cal:after{top:-6px;left:10px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.hed{font-size:15px;font-weight:500;margin:15px 0 5px}.inBtw{background-color:#bbddf5}.nav{margin:0}.dHd{width:29.5px;color:#bbb;height:30px;line-height:30px;font-size:12px}.mnt{box-sizing:content-box;max-width:210px;width:auto;height:auto;display:inline-block;padding:0 10px 10px}.day{pointer-events:auto;border:none;width:28px;height:28px;line-height:28px;color:#555;cursor:pointer;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;font-size:14px}.active.sel.day{background-color:#50a5e6}.disb{opacity:.7;color:#888;cursor:default}.lChev:before,.rChev:before{border-style:solid;border-width:3px 3px 0 0;height:7px;width:7px;cursor:pointer}.rChev:before{transform:rotate(45deg)}.lChev:before{transform:rotate(-135deg)}.lChev,.rChev{top:18px}.rChev{right:25px}.lChev{left:20px}';
     if (overrideClass) {
         css = css.replace(/\.[a-z_-][\w-]*(?=[^{}]*{[^{}]*})/ig, function (matched){
@@ -57,6 +61,16 @@ function writeCSSToHead(overrideClass) {
     }
     styleEl.innerHTML = css;
     document.head.appendChild(styleEl);
+}
+
+function removeCSSFromHead(styleClass) {
+    var cssElements = document.getElementsByClassName(styleClass);
+    for (var i = 0; i < cssElements.length; i++) {
+        var css = cssElements[i];
+        if (css.parentElement) {
+            css.parentElement.removeChild(css);
+        }
+    }
 }
 
 function getDays(passedInDate, date, i, local) {
@@ -97,6 +111,7 @@ function getMonthsInfoForCalendar(passedInDate, monthsToShow, local) {
 function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var firstBox = overrides.firstBox;
     var lastBox = overrides.lastBox || {};
+    var listeners = [];
     var settings = {
         local: overrides.local || 'en-US',
         localOpts: overrides.localOpts || {},
@@ -113,6 +128,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     var today = newDateInstance(newDateInstance().setHours(0, 0, 0, 0));
     var wroteCss = false;
     var overrideClass = overrides.overrideClass || '';
+    var styleClass = overrideClass + '_tinypicker';
     var calendarClassName = 'cal';
     var div = 'div';
     var selectedString = 'sel';
@@ -121,6 +137,23 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     startDate = firstBox.value === '' ? today : newDateInstance(startDate && startDate.setHours(0, 0, 0, 0) || '');
     var endDate = overrides.endDate;
     endDate = newDateInstance(endDate && endDate.setHours(0, 0, 0, 0) || '');
+
+    function cleanupEventListeners() {
+        listeners.forEach(function (cleanupListener) {
+            if (typeof cleanupListener === 'function') {
+                cleanupListener();
+            }
+        });
+    }
+
+    function addEventListener(target, type, callback) {
+        target.addEventListener(type, callback);
+        listeners.push(function () {
+            if (target && typeof target.removeEventListener === 'function') {
+                target.removeEventListener(type, callback);
+            }
+        });
+    }
 
     function createElementWithClass(type, className) {
         var el = document.createElement(type);
@@ -139,7 +172,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
 
         // Close the calendar listener
         ['click', 'touchend'].forEach(function (event) {
-            document.addEventListener(event, function (e) {
+            addEventListener(document, event, function (e) {
                 var el = e.target;
                 var calendarEl = getFirstElementByClass(calendarClassName);
                 if (calendarEl && !calendarEl.contains(getFirstElementByClass(el.className)) && el !== document.activeElement) {
@@ -206,7 +239,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
         appendChild(navWrapper, createElementWithClass('span', 'rChev'));
         appendChild(navWrapper, createElementWithClass('span', 'lChev'));
 
-        navWrapper.addEventListener('click', function (e) {
+        addEventListener(navWrapper, 'click', function (e) {
             var monthChange = e.target.className === 'rChev ' + overrideClass ? 1 : -1;
             var firstWeek = calendarObj[0].weeks[0];
             var date = firstWeek[Object.keys(firstWeek)[0]].date;
@@ -232,7 +265,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
                     var currentTime = getTime(currentDate);
                     if ((currentDate >= today && element === firstBox) || currentDate >= startDate || settings.selectPast) {
                         dayOfWeekEl.className =  'active ' + overrideClass;
-                        dayOfWeekEl.addEventListener('click', setDateInEl.bind(this, currentDate, element, false));
+                        addEventListener(dayOfWeekEl, 'click', setDateInEl.bind(this, currentDate, element, false));
 
                         // Add Highlights to days
                         if (endDate > currentDate && startDate < currentDate) {
@@ -255,7 +288,7 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     }
 
     function hoverRange(el, inputClicked) {
-        el.addEventListener('mouseover', function (e) {
+        addEventListener(el, 'mouseover', function (e) {
             var days = document.getElementsByClassName('day');
             var hoverTime = parseInt(e.target.getAttribute('time'), 10);
             var startTime = getTime(startDate);
@@ -305,20 +338,26 @@ function TinyPicker(overrides) { // eslint-disable-line no-unused-vars
     this.init = function () {
         [firstBox, lastBox].forEach(function (element) {
             if (!element.nodeType) return;
-            element.addEventListener('focus', function (e) {
-                !wroteCss && writeCSSToHead(overrideClass);
+            addEventListener(element, 'focus', function (e) {
+                !wroteCss && writeCSSToHead(overrideClass, styleClass);
                 wroteCss = true;
                 showCalendar(e.target);
             });
             // TODO: Should this be here??? I can do this somewhere else
             var timer;
-            element.addEventListener('keydown', function (e) {
+            addEventListener(element, 'keydown', function (e) {
                 clearTimeout(timer);
                 timer = setTimeout(function () {
                     userInputedDateHandler(e.target);
                 }, 1000);
             });
         });
+    };
+
+    this.cleanup = function () {
+        removeCalendar(calendarClassName);
+        removeCSSFromHead(styleClass);
+        cleanupEventListeners();
     };
 }
 
