@@ -48,7 +48,13 @@ function positionCalendar(calendarElement, shadowElement) {
 }
 
 function writeCSSToHead(overrideClass) {
+    overrideClass = overrideClass || '';
+    var styleClass = overrideClass + '_tinypicker';
+    // Protect against double-appending the styles.
+    if (document.getElementsByClassName(styleClass).length) { return; }
+
     var styleEl = document.createElement('style');
+    styleEl.className = styleClass;
     var css = '.dHd,.day{float:left;text-align:center}.tp-cc{width:auto}.dHd,.day,.hed{pointer-events:none;text-align:center}div.cal,div.cal:after,div.cal:before,.lChev,.rChev{position:absolute}div.cal{background:#fff;max-height:310px;overflow:scroll;width:auto;border:1px solid #ccc;z-index:1;padding:0;font-size:10px;border-radius:4px;box-shadow:0 6px 12px rgba(0,0,0,.175);color:#000;font-family:Arial,Helvetica,sans-serif}div.cal:before{top:-7px;left:9px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,.2);content:\'\'}div.cal:after,.lChev:before,.rChev:before{content:"";display:inline-block}div.cal:after{top:-6px;left:10px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.hed{font-size:15px;font-weight:500;margin:15px 0 5px}.inBtw{background-color:#bbddf5}.nav{margin:0}.dHd{width:29.5px;color:#bbb;height:30px;line-height:30px;font-size:12px}.mnt{box-sizing:content-box;max-width:210px;width:auto;height:auto;display:inline-block;padding:0 10px 10px}.day{pointer-events:auto;border:none;width:28px;height:28px;line-height:28px;color:#555;cursor:pointer;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;font-size:14px}.active.sel.day{background-color:#50a5e6}.disb{opacity:.7;color:#888;cursor:default}.lChev:before,.rChev:before{border-style:solid;border-width:3px 3px 0 0;height:7px;width:7px;cursor:pointer}.rChev:before{transform:rotate(45deg)}.lChev:before{transform:rotate(-135deg)}.lChev,.rChev{top:18px}.rChev{right:25px}.lChev{left:20px}';
     if (overrideClass) {
         css = css.replace(/\.[a-z_-][\w-]*(?=[^{}]*{[^{}]*})/ig, function (matched){
