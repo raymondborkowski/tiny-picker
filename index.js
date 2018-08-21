@@ -42,9 +42,11 @@ function isDateTodayOrFuture(currentDate, checkThisDate) {
 }
 
 function positionCalendar(calendarElement, shadowElement) {
-    var positions = shadowElement.getBoundingClientRect();
-    calendarElement.style.top  =  positions.top + positions.height + (window.pageYOffset || document.documentElement.scrollTop) + 15 + 'px';
-    calendarElement.style.left = positions.left + 'px';
+    var bodyRect = document.body.getBoundingClientRect();
+    var elemRect = shadowElement.getBoundingClientRect();
+    var offset = elemRect.top - bodyRect.top;
+    calendarElement.style.top = offset + elemRect.height + 15 + 'px';
+    calendarElement.style.left = elemRect.left + 'px';
 }
 
 function writeCSSToHead(overrideClass, styleClass) {
